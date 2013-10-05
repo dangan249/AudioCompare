@@ -1,6 +1,7 @@
 from abc import ABCMeta
+from abc import abstractmethod
 
-class InputFile:
+class AbstractInputFile:
     __metaclass__= ABCMeta
 
     @abstractmethod

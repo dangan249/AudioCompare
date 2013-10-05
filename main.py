@@ -1,6 +1,6 @@
-
 import sys
-import WavInputFile
+from WavInputFile import WavInputFile
+
 
 def audio_matcher():
 
@@ -11,11 +11,17 @@ def audio_matcher():
     input_file_1 = WavInputFile(sys.argv[1])
     input_file_2 = WavInputFile(sys.argv[2])
 
+    print len(input_file_1.get_audio_samples())
+    print len(input_file_2.get_audio_samples())
+
 #    input_file_1_normalized = normalize(input_file_1.audio_data())
 #    input_file_2_normalized = normalize(input_file_2.audio_data())
 
 #    input_file_1_fft = fft(input_file_1_normalized)
 #    input_file_2_fft = fft(input_file_2_normalized)
+
+#   I don't yet understand how audio fingerprints work, but here would
+#   probably be where we'd generate them
 
 #    if matcher(input_file_1_fft, input_file_2_fft):
 #        print "MATCH"
