@@ -6,13 +6,13 @@ from AbstractInputFile import AbstractInputFile
 class WavInputFile(AbstractInputFile):
 
     def __init__(self, filename):
-        wav_file = open(filename, "r")
+        self.wav_file = open(filename, "r")
 
-        if not self.check_riff_format(wav_file):
+        if not self.check_riff_format(self.wav_file):
             raise IOError("{f} is not a valid WAVE file".format(f=filename))
-        wav_file.seek(0)
+        self.wav_file.seek(0)
 
-        riff_chunk = chunk.Chunk(wav_file, bigendian=False)
+        riff_chunk = chunk.Chunk(self.wav_file, bigendian=False)
         riff_data = riff_chunk.read()
 
         if not self.check_wave_id(riff_data):
@@ -35,9 +35,6 @@ class WavInputFile(AbstractInputFile):
         self.block_align = self.read_short(fmt_data[12:14])
 
         self.data_chunk = chunk.Chunk(riff_data_io, bigendian=False)
-        #self.audio_data = bytearray(data_chunk.read())
-
-        wav_file.close()
 
     @staticmethod
     def check_riff_format(file):
@@ -94,8 +91,12 @@ class WavInputFile(AbstractInputFile):
 
         return result
 
-    def channels(self):
+    def get_channels(self):
         return self.channels
 
-    def block_align(self):
+    def get_block_align(self):
         return self.block_align
+
+    def close(self):
+        self.data_chunk.close()
+        self.wav_file.close()

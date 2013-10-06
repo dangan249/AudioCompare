@@ -9,9 +9,13 @@ class AbstractInputFile:
         pass
 
     @abstractmethod
-    def channels(self):
+    def get_channels(self):
         pass
 
     @abstractmethod
-    def block_align(self):
+    def get_block_align(self):
+        pass
+
+    @abstractmethod
+    def close(self):
         pass

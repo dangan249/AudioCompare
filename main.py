@@ -16,8 +16,6 @@ def audio_matcher():
         print ("ERROR: {e}".format(e=e))
         return
 
-    print FFT.FFT(input_file_1.get_audio_samples(1024))[0]
-
 #    input_file_1_normalized = normalize(input_file_1.audio_data())
 #    input_file_2_normalized = normalize(input_file_2.audio_data())
 
