@@ -1,5 +1,6 @@
 import sys
 from WavInputFile import WavInputFile
+import FFT
 
 
 def audio_matcher():
@@ -8,11 +9,14 @@ def audio_matcher():
         print "Must provide two input files."
         return
 
-    input_file_1 = WavInputFile(sys.argv[1])
-    input_file_2 = WavInputFile(sys.argv[2])
+    try:
+        input_file_1 = WavInputFile(sys.argv[1])
+        input_file_2 = WavInputFile(sys.argv[2])
+    except IOError, e:
+        print ("ERROR: {e}".format(e=e))
+        return
 
-    print len(input_file_1.get_audio_samples())
-    print len(input_file_2.get_audio_samples())
+    print FFT.FFT(input_file_1.get_audio_samples(1024))[0]
 
 #    input_file_1_normalized = normalize(input_file_1.audio_data())
 #    input_file_2_normalized = normalize(input_file_2.audio_data())

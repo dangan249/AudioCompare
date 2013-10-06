@@ -5,7 +5,7 @@ class AbstractInputFile:
     __metaclass__= ABCMeta
 
     @abstractmethod
-    def get_audio_samples(self):
+    def get_audio_samples(self, n):
         pass
 
     @abstractmethod

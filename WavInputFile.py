@@ -34,8 +34,8 @@ class WavInputFile(AbstractInputFile):
 
         self.block_align = self.read_short(fmt_data[12:14])
 
-        data_chunk = chunk.Chunk(riff_data_io, bigendian=False)
-        self.audio_data = bytearray(data_chunk.read())
+        self.data_chunk = chunk.Chunk(riff_data_io, bigendian=False)
+        #self.audio_data = bytearray(data_chunk.read())
 
         wav_file.close()
 
@@ -80,8 +80,19 @@ class WavInputFile(AbstractInputFile):
     def read_int(data):
         return struct.unpack("<I", data)[0]
 
-    def get_audio_samples(self):
-        return self.audio_data
+    def get_audio_samples(self, n):
+        bytes = self.block_align * n
+        bbc = self.block_align / self.channels
+        data = self.data_chunk.read(bytes)
+        result = [[0]*n]*self.channels
+        channel = 0
+        sample = 0
+        for i in range(0, bytes, self.block_align):
+            result[channel][sample] = self.read_short(data[i:i+bbc])
+            channel = channel % self.channels
+            sample += 1
+
+        return result
 
     def channels(self):
         return self.channels
