@@ -31,10 +31,11 @@ class WavInputFile(AbstractInputFile):
             raise IOError("{f} must be a valid WAVE_FORMAT_PCM file".format(f=filename))
 
         self.channels = self.read_short(fmt_data[2:4])
-
+        self.sample_rate = self.read_int(fmt_data[4:8])
         self.block_align = self.read_short(fmt_data[12:14])
 
         self.data_chunk = chunk.Chunk(riff_data_io, bigendian=False)
+        self.total_samples = (self.data_chunk.getsize() / self.block_align)
 
     @staticmethod
     def check_riff_format(file):
@@ -81,21 +82,32 @@ class WavInputFile(AbstractInputFile):
         bytes = self.block_align * n
         bbc = self.block_align / self.channels
         data = self.data_chunk.read(bytes)
+        if len(data) == 0:
+            raise EOFError
         result = [[0]*n]*self.channels
         channel = 0
         sample = 0
-        for i in range(0, bytes, self.block_align):
+        for i in range(0, len(data), self.block_align):
             result[channel][sample] = self.read_short(data[i:i+bbc])
             channel = channel % self.channels
             sample += 1
 
         return result
 
+    def get_raw_bytes(self, n):
+        return self.data_chunk.read(n)
+
     def get_channels(self):
         return self.channels
 
     def get_block_align(self):
         return self.block_align
+
+    def get_sample_rate(self):
+        return self.sample_rate
+
+    def get_total_samples(self):
+        return self.total_samples
 
     def close(self):
         self.data_chunk.close()

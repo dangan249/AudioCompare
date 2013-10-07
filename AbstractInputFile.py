@@ -17,5 +17,14 @@ class AbstractInputFile:
         pass
 
     @abstractmethod
+    def get_sample_rate(self):
+        pass
+
+
+    @abstractmethod
+    def get_total_samples(self):
+        pass
+
+    @abstractmethod
     def close(self):
         pass
