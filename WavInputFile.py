@@ -3,23 +3,34 @@ import StringIO
 import struct
 from AbstractInputFile import AbstractInputFile
 
+
 class WavInputFile(AbstractInputFile):
 
     def __init__(self, filename):
+        """Open a WAVE file with the given file path.
+        This document http://www-mmsp.ece.mcgill.ca/documents/AudioFormats/WAVE/WAVE.html
+        was used as a spec for files. We implement a limited subset
+        of the WAVE format. We assume a RIFF chunk contains a fmt
+        chunk and then a data chunk, and do not read past that.
+        We also will only open WAVE_FORMAT_PCM files."""
         self.wav_file = open(filename, "r")
 
+        # check for RIFF in beginning of file
         if not self.check_riff_format(self.wav_file):
             raise IOError("{f} is not a valid WAVE file".format(f=filename))
         self.wav_file.seek(0)
 
+        # Open outer RIFF chunk
         riff_chunk = chunk.Chunk(self.wav_file, bigendian=False)
         riff_data = riff_chunk.read()
 
+        # Check for WAVE
         if not self.check_wave_id(riff_data):
             raise IOError("{f} is not a valid WAVE file".format(f=filename))
 
         riff_data_io = StringIO.StringIO(riff_data[4:])
 
+        # check that we just opened a fmt chunk
         if not self.check_fmt(riff_data_io):
             raise IOError("{f} is not a valid WAVE file".format(f=filename))
         riff_data_io.seek(0)
@@ -27,9 +38,11 @@ class WavInputFile(AbstractInputFile):
         fmt_chunk = chunk.Chunk(riff_data_io, bigendian=False)
         fmt_data = fmt_chunk.read()
 
+        # We only handle PCM files
         if not self.check_fmt_valid(fmt_data):
             raise IOError("{f} must be a valid WAVE_FORMAT_PCM file".format(f=filename))
 
+        # get some info from the file header
         self.channels = self.read_short(fmt_data[2:4])
         self.sample_rate = self.read_int(fmt_data[4:8])
         self.block_align = self.read_short(fmt_data[12:14])
@@ -72,13 +85,21 @@ class WavInputFile(AbstractInputFile):
 
     @staticmethod
     def read_short(data):
+        """Turn a 2-byte little endian number into a Python number."""
         return struct.unpack("<H", data)[0]
 
     @staticmethod
     def read_int(data):
+        """Turn a 4-byte little endian number into a Python number."""
         return struct.unpack("<I", data)[0]
 
     def get_audio_samples(self, n):
+        """Get n audio samples from each channel.
+        Returns an array of arrays. There will be one
+        array for each channel, each with n samples in it.
+        If we encounter end of file, we may return less than
+        n samples. If we were already at end of file, we raise
+        EOFError."""
         bytes = self.block_align * n
         bbc = self.block_align / self.channels
         data = self.data_chunk.read(bytes)
@@ -94,21 +115,24 @@ class WavInputFile(AbstractInputFile):
 
         return result
 
-    def get_raw_bytes(self, n):
-        return self.data_chunk.read(n)
-
     def get_channels(self):
+        """Returns the number of channels in the file."""
         return self.channels
 
     def get_block_align(self):
+        """Returns the number of bytes used in the file
+        to represent a sample, multiplied by the number of channels."""
         return self.block_align
 
     def get_sample_rate(self):
+        """Returns the numbers of samples per second, per channel."""
         return self.sample_rate
 
     def get_total_samples(self):
+        """Returns the total number of samples per channel."""
         return self.total_samples
 
     def close(self):
+        """Close the input file."""
         self.data_chunk.close()
         self.wav_file.close()

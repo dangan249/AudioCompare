@@ -1,0 +1,23 @@
+
+Please see individual files for descriptions of individual methods
+
+
+main.py
+ - Entry point of the program
+ - Opens input files
+ - Runs matching algorithm on them
+
+Input System:
+-------------
+
+AbstractInputFile:
+ - Defines interface for an input file
+
+WavInputFile:
+ - Used to open and examine WAVE files
+
+
+Processing:
+-----------
+FFT
+ - Will run a discrete Fourier transform on a set of samples
