@@ -20,6 +20,9 @@ def timestamp(chunk, chunk_size, samples_per_second):
     return float(chunk) * float(chunk_size) / float(samples_per_second)
 
 def visualizer():
+    """Display a graph that shows which frequencies we
+    will use in our hashing algorithm.
+    """
     try:
         input_file = WavInputFile(sys.argv[1])
     except IOError, e:
@@ -28,24 +31,16 @@ def visualizer():
 
     freq_chunks = FFT.FFT(input_file).series()
 
+    # see fft_test for comments about this section
     chunks = len(freq_chunks)
-    #max = [[copy.deepcopy(0) for y in range(len(RANGE))] for x in range(chunks)]
-    #max_index = [[copy.deepcopy(0) for y in range(len(RANGE))] for x in range(chunks)]
-    #max = [x[:] for x in [[0]*len(RANGE)]*chunks]
-    #max_index = [x[:] for x in [[0]*len(RANGE)]*chunks]
     max = []
     max_index = []
     hashes = {}
     for chunk in range(chunks):
-        #max.append([0 for _ in range(len(RANGE))])
         max.append([])
         max_index.append([])
-        #max_index.append([0 for _ in range(len(RANGE))])
-        #print chunk
         for freq in range(LOWER_LIMIT, UPPER_LIMIT):
             mag = math.log(math.fabs(freq_chunks[chunk][freq])+1)
-            #mag_array.append(mag)
-            #print chunk, freq
             bucket = get_bucket(freq)
             if len(max[chunk]) <= bucket:
                 max[chunk].append(mag)
@@ -58,34 +53,42 @@ def visualizer():
         print hash
         hashes[hash] = time
 
-    #for r in max:
-    #    print r
-
-    return
-
+    # initialize an empty window
     master = Tk()
     lines = UPPER_LIMIT
     blockSizeX = 3
     blockSizeY = 2
     w = Canvas(master, width=chunks*blockSizeX, height=lines*blockSizeY)
     w.pack()
+    # for each chunk (which will be the X axis)
     for i in range(chunks):
         freq = 1
+        # for each line (the Y axis)
         for line in range(1, lines):
+            # see if the current line one of our "winning"
+            # frequencies that we're hasing on
             bucket = get_bucket(line)
             if max_index[i][bucket] == line:
                 important = True
             else:
                 important = False
+
+            # compute what color this frequency should
+            # appear as, based on its magnitude
             abs = math.fabs(freq_chunks[i][freq]+1)
             mag = math.log10(abs)
+
+            # assign color to red if winning frequency,
+            # otherwise some shade of blue
             if mag > 0:
                 if not important:
                     color = "#00" + "{:02x}".format(int(mag*10)) + "{:02x}".format(int(mag*20))
                 else:
                     color = "#FF0000"
+                # make a small rectangle on the scren of the appropriate color
                 w.create_rectangle(i*blockSizeX, line*blockSizeY, (i+1)*blockSizeX, (line+1)*blockSizeY, fill=color, width=0)
 
+            # the next line will represent a frequency that is logarithmically bigger than this one
             freq += math.log10(line) * math.log10(line)
 
     mainloop()

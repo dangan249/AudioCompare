@@ -1,7 +1,6 @@
 import sys
 from WavInputFile import WavInputFile
 import FFT
-from Tkinter import *
 import math
 
 
@@ -20,6 +19,8 @@ def timestamp(chunk, chunk_size, samples_per_second):
     return float(chunk) * float(chunk_size) / float(samples_per_second)
 
 def hash(file):
+    """Create a hash table mapping loudest frequencies
+    in certain ranges in each chunk with their chunk number."""
     try:
         input_file = WavInputFile(file)
     except IOError, e:
@@ -28,6 +29,7 @@ def hash(file):
 
     freq_chunks = FFT.FFT(input_file).series()
 
+    # see fft_test for comments about this section
     chunks = len(freq_chunks)
     max = []
     max_index = []
@@ -46,13 +48,13 @@ def hash(file):
                 max_index[chunk][bucket] = freq
         time = timestamp(chunk, CHUNK_SIZE, input_file.get_sample_rate())
         #fuzz_factor = 2
-        #hash = max[chunk][0]
+        # create a hash key based on the winning frequencies
         hash = "".join(["{:02.0f}".format(m) for m in max[chunk]])
-        #print hash
+        # create an entry in our hash table, with the winning frequencies
+        # as the key, and the chunk index as the value
         hashes[hash] = chunk
 
-    #print len(hashes)
-    #print len(hashes_unique)
+
     return hashes
 
 def match_test():
