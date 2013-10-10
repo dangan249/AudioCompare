@@ -2,82 +2,82 @@ import sys
 from WavInputFile import WavInputFile
 import FFT
 import math
+import numpy
 
 
-LOWER_LIMIT = 0
-UPPER_LIMIT = 300
-CHUNK_SIZE = 1024
-RANGE = [40, 80, 120, 180, UPPER_LIMIT+1]
+BUCKET_SIZE = 20
+LOWER_LIMIT = 1
+BUCKETS = 4
+UPPER_LIMIT = (BUCKET_SIZE * BUCKETS) + LOWER_LIMIT
 
-def get_bucket(freq):
-    i = 0
-    while RANGE[i] < freq:
-        i += 1
-    return i
+def get_bucket(freq_index):
+    return freq_index / BUCKET_SIZE
 
 def timestamp(chunk, chunk_size, samples_per_second):
     return float(chunk) * float(chunk_size) / float(samples_per_second)
 
-def hash(file):
-    """Create a hash table mapping loudest frequencies
-    in certain ranges in each chunk with their chunk number."""
-    try:
-        input_file = WavInputFile(file)
-    except IOError, e:
-        print ("ERROR: {e}".format(e=e))
-        return
-
-    freq_chunks = FFT.FFT(input_file).series()
-
+def bucket_winners(freq_chunks):
     # see fft_test for comments about this section
     chunks = len(freq_chunks)
     max = []
     max_index = []
-    hashes = dict()
     for chunk in range(chunks):
         max.append([])
         max_index.append([])
         for freq in range(LOWER_LIMIT, UPPER_LIMIT):
-            mag = math.log(math.fabs(freq_chunks[chunk][freq])+1)
-            bucket = get_bucket(freq)
+            val = freq_chunks[chunk][freq]
+            abs = math.sqrt((val.real * val.real) + (val.imag * val.imag)) + 1
+            mag = math.log(abs)
+            bucket = freq / BUCKET_SIZE
             if len(max[chunk]) <= bucket:
                 max[chunk].append(mag)
-                max_index[chunk].append(max_index)
+                max_index[chunk].append(freq)
             if mag > max[chunk][bucket]:
                 max[chunk][bucket] = mag
                 max_index[chunk][bucket] = freq
-        time = timestamp(chunk, CHUNK_SIZE, input_file.get_sample_rate())
-        #fuzz_factor = 2
-        # create a hash key based on the winning frequencies
-        hash = "".join(["{:02.0f}".format(m) for m in max[chunk]])
-        # create an entry in our hash table, with the winning frequencies
-        # as the key, and the chunk index as the value
-        hashes[hash] = chunk
 
+    return max_index
+
+def fuzz(n, f):
+    diff = n % f
+    return n - diff
+
+def hash(max_index):
+    hashes = {}
+    for chunk in range(len(max_index)):
+        fuzz_factor = 2
+        hash = "".join(["{:d} ".format(fuzz(max_index[chunk][m], fuzz_factor)) for m in range(BUCKETS)])
+        hashes[hash] = chunk
 
     return hashes
 
 def match_test():
-    #hash1 = hash(sys.argv[1])
-    #print "finished hash 1"
-    hash2 = hash(sys.argv[2])
-    print "finished hash 2"
-    #database = [hash1, hash2]
+    file1 = WavInputFile(sys.argv[1])
+    hash1 = hash(bucket_winners(FFT.FFT(file1).series()))
+    print "finished hash 1"
 
-    query_hash = hash(sys.argv[3])
+    file2 = WavInputFile(sys.argv[2])
+    query_hash = hash(bucket_winners(FFT.FFT(file2).series()))
     print "finished query hash"
-    #print query_hash
-    #print hash2.intersection(query_hash)
-    diff = None
-    for h in query_hash:
-        #print h, query_hash[h]
-        for h2 in hash2:
-            if h == h2:
-                if diff == None:
-                    diff = (hash2[h2] - query_hash[h]) / 10
-                elif ((hash2[h2] - query_hash[h]) / 10) == diff:
-                    print "match at {c1},{c2}".format(c1=query_hash[h], c2=hash2[h2])
 
+    diffs = {}
+    for h in query_hash:
+        for h1 in hash1:
+            if h == h1:
+                diff = (hash1[h1] - query_hash[h]) / 10
+                if diff in diffs:
+                    diffs[diff] += 1
+                else:
+                    diffs[diff] = 1
+
+    print diffs
+
+    for d in diffs:
+        if diffs[d] >= 5:
+            print "MATCH"
+            return
+
+    print "NO MATCH"
 
 
 if __name__ == "__main__":

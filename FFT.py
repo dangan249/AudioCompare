@@ -1,10 +1,11 @@
 import numpy.fft
+import scipy
 
 
 class FFT:
     """A mechanism for identifying the dominant frequencies
     in time ranges in an audio file."""
-    def __init__(self, input_file, chunk_size=2940):
+    def __init__(self, input_file, chunk_size=8196):
         """Set up an file for FFT processing.
         The constructor doesn't actually do the processing."""
         self.input_file = input_file
