@@ -1,0 +1,4 @@
+#!/bin/sh
+
+python2.7 main.py $1 $2
+
