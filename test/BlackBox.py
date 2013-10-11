@@ -7,7 +7,7 @@ from array import *
 class AudioMatchBlackBox(unittest.TestCase):
 	#Get current directory. We know what files are in here
 	testSuiteDir = os.path.dirname(os.path.abspath(__file__)) + "/../test_data/"
-	testCWD = "../"
+	testCWD = os.path.dirname(os.path.abspath(__file__)) + "/../"
 	runCommand = os.path.dirname(os.path.abspath(__file__))+"/../p4500"
 
 	def setUp(self):
@@ -66,7 +66,7 @@ class AudioMatchBlackBox(unittest.TestCase):
 		
 		#Checking Error Message
 		for line in callErr.splitlines():
-			assertTrue(errorPattern.match(line), msg=name + " - should_produce_errors: STDERR incorrect line (Output line "+str(currLine)+") (Expected:"+reString+" Actual:"+line+")")
+			self.assertTrue(errorPattern.match(line), msg=name + " - should_produce_errors: STDERR incorrect line (Output line "+str(currLine)+") (Expected:"+reString+" Actual:"+line+")")
 			currLine += 1
 
 	def should_not_produce_errors(self, command = [], name = "should_not_produce_error", shouldMatch = True):
