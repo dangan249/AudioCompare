@@ -8,7 +8,7 @@ class AudioMatchBlackBox(unittest.TestCase):
 	#Get current directory. We know what files are in here
 	testSuiteDir = os.path.dirname(os.path.abspath(__file__)) + "/../test_data/"
 	testCWD = "../"
-	runCommand = os.path.dirname(os.path.abspath(__file__))+"/../main.py"
+	runCommand = os.path.dirname(os.path.abspath(__file__))+"/../p4500"
 
 	def setUp(self):
 		pass
