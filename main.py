@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 from WavInputFile import WavInputFile
 from FFT import FFT
