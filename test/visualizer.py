@@ -4,6 +4,7 @@ from Tkinter import *
 import math
 import numpy
 from match_test import *
+from FFT import FFT
 
 CHUNK_SIZE = 8196
 
@@ -17,12 +18,7 @@ def visualizer():
         print ("ERROR: {e}".format(e=e))
         return
 
-    samples = input_file.get_audio_samples(input_file.get_total_samples())[0]
-    freq_chunks = []
-    chunks = len(samples) / CHUNK_SIZE
-    for i in range(chunks):
-        freq_chunks.append(numpy.fft.fft(samples[i*CHUNK_SIZE:(i+1)*CHUNK_SIZE]))
-
+    freq_chunks = FFT(input_file).series()
     max_index = bucket_winners(freq_chunks)
 
     # initialize an empty window
