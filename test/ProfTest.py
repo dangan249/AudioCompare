@@ -1,0 +1,329 @@
+import unittest
+import os
+import re
+from subprocess import *
+
+
+class AudioMatchBlackBox(unittest.TestCase):
+    #Get current directory. We know what files are in here
+    testSuiteDir = os.path.dirname(os.path.abspath(__file__)) + "/../test_data/A6/"
+    testCWD = os.path.dirname(os.path.abspath(__file__)) + "/../"
+    runCommand = os.path.dirname(os.path.abspath(__file__)) + "/../p4500"
+
+    def test_hewlett_hewlett(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "hewlett.wav", self.testSuiteDir + "hewlett.wav"],
+            "hewlett_hewlett", shouldMatch=True)
+
+    def test_hewlett_x10(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "hewlett.wav", self.testSuiteDir + "x10.wav"],
+            "hewlett_x10", shouldMatch=True)
+
+    def test_hewlett_x11(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "hewlett.wav", self.testSuiteDir + "x11.wav"],
+            "hewlett_x11", shouldMatch=True)
+
+    def test_hewlett_x12(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "hewlett.wav", self.testSuiteDir + "x12.wav"],
+            "hewlett_x12", shouldMatch=True)
+
+    def test_trouble_trouble(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "trouble.wav"],
+            "trouble_trouble", shouldMatch=True)
+
+    def test_trouble_x1(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x1.wav"],
+            "trouble_x1", shouldMatch=True)
+
+    def test_trouble_x2(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x2.wav"],
+            "trouble_x2", shouldMatch=True)
+
+    def test_trouble_x3(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x3.wav"],
+            "trouble_x3", shouldMatch=True)
+
+    def test_trouble_x4(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x4.wav"],
+            "trouble_x4", shouldMatch=True)
+
+    def test_trouble_x5(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x5.wav"],
+            "trouble_x5", shouldMatch=True)
+
+    def test_trouble_x6(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x6.wav"],
+            "trouble_x6", shouldMatch=True)
+
+    def test_wayfaring_wayfaring(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "wayfaring.wav"],
+            "wayfaring_wayfaring", shouldMatch=True)
+
+    def test_wayfaring_x7(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x7.wav"],
+            "wayfaring_x7", shouldMatch=True)
+
+    def test_wayfaring_x8(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x8.wav"],
+            "wayfaring_x8", shouldMatch=True)
+
+    def test_wayfaring_x9(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x9.wav"],
+            "wayfaring_x9", shouldMatch=True)
+
+    def test_hewlett_x10(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "hewlett.wav", self.testSuiteDir + "x10.wav"],
+            "wayfaring_x10", shouldMatch=True)
+
+    def test_x10_x10(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x10.wav", self.testSuiteDir + "x10.wav"],
+            "x10_x10", shouldMatch=True)
+
+    def test_x11_x10(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x11.wav", self.testSuiteDir + "x10.wav"],
+            "x11_x10", shouldMatch=True)
+
+    def test_hewlett_x11(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "hewlett.wav", self.testSuiteDir + "x11.wav"],
+            "x10_x11", shouldMatch=True)
+
+    def test_x11_x11(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x11.wav", self.testSuiteDir + "x11.wav"],
+            "x11_x11", shouldMatch=True)
+
+    def test_hewlett_x12(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "hewlett.wav", self.testSuiteDir + "x12.wav"],
+            "x10_x12", shouldMatch=True)
+
+    def test_x12_x12(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x12.wav", self.testSuiteDir + "x12.wav"],
+            "x12_x12", shouldMatch=True)
+
+    def test_trouble_x1(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x1.wav"],
+            "trouble_x1", shouldMatch=True)
+
+    def test_x1_x1(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x1.wav", self.testSuiteDir + "x1.wav"],
+            "x1_x1", shouldMatch=True)
+
+    def test_x1_x2(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x1.wav", self.testSuiteDir + "x2.wav"],
+            "x1_x2", shouldMatch=True)
+
+    def test_x1_x3(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x1.wav", self.testSuiteDir + "x3.wav"],
+            "x1_x3", shouldMatch=True)
+
+    def test_trouble_x2(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x2.wav"],
+            "trouble_x2", shouldMatch=True)
+
+    def test_x2_x1(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x2.wav", self.testSuiteDir + "x1.wav"],
+            "x2_x1", shouldMatch=True)
+
+    def test_x2_x2(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x2.wav", self.testSuiteDir + "x2.wav"],
+            "x2_x2", shouldMatch=True)
+
+    def test_x2_x3(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x2.wav", self.testSuiteDir + "x3.wav"],
+            "x2_x3", shouldMatch=True)
+
+    def test_trouble_x3(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x3.wav"],
+            "trouble_x3", shouldMatch=True)
+
+    def test_x3_x1(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x3.wav", self.testSuiteDir + "x1.wav"],
+            "x3_x1", shouldMatch=True)
+
+    def test_x3_x2(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x3.wav", self.testSuiteDir + "x2.wav"],
+            "x3_x2", shouldMatch=True)
+
+    def test_x3_x3(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x3.wav", self.testSuiteDir + "x3.wav"],
+            "x3_x3", shouldMatch=True)
+
+    def test_trouble_x4(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x4.wav"],
+            "trouble_x4", shouldMatch=True)
+
+    def test_x4_x4(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x4.wav", self.testSuiteDir + "x4.wav"],
+            "x4_x4", shouldMatch=True)
+
+    def test_x4_x5(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x4.wav", self.testSuiteDir + "x5.wav"],
+            "x4_x5", shouldMatch=True)
+
+    def test_x4_x6(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x4.wav", self.testSuiteDir + "x6.wav"],
+            "x4_x6", shouldMatch=True)
+
+    def test_trouble_x5(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x5.wav"],
+            "trouble_x5", shouldMatch=True)
+
+    def test_x5_x4(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x5.wav", self.testSuiteDir + "x4.wav"],
+            "x5_x4", shouldMatch=True)
+
+    def test_x5_x5(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x5.wav", self.testSuiteDir + "x5.wav"],
+            "x5_x5", shouldMatch=True)
+
+    def test_x5_x6(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x5.wav", self.testSuiteDir + "x6.wav"],
+            "x5_x6", shouldMatch=True)
+
+    def test_trouble_x6(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "trouble.wav", self.testSuiteDir + "x6.wav"],
+            "trouble_x6", shouldMatch=True)
+
+    def test_x6_x4(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x6.wav", self.testSuiteDir + "x4.wav"],
+            "x6_x4", shouldMatch=True)
+
+    def test_x6_x5(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x6.wav", self.testSuiteDir + "x5.wav"],
+            "x6_x5", shouldMatch=True)
+
+    def test_x6_x6(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x6.wav", self.testSuiteDir + "x6.wav"],
+            "x6_x6", shouldMatch=True)
+
+    def test_wayfaring_x7(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x7.wav"],
+            "wayfaring_x7", shouldMatch=True)
+
+    def test_x7_x7(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x7.wav", self.testSuiteDir + "x7.wav"],
+            "x7_x7", shouldMatch=True)
+
+    def test_x7_x8(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x7.wav", self.testSuiteDir + "x8.wav"],
+            "x7_x8", shouldMatch=True)
+
+    def test_x7_x9(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x7.wav", self.testSuiteDir + "x9.wav"],
+            "x7_x9", shouldMatch=True)
+
+    def test_wayfaring_x8(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x8.wav"],
+            "wayfaring_x8", shouldMatch=True)
+
+    def test_x8_x7(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x8.wav", self.testSuiteDir + "x7.wav"],
+            "x8_x7", shouldMatch=True)
+
+    def test_x8_x8(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x8.wav", self.testSuiteDir + "x8.wav"],
+            "x8_x8", shouldMatch=True)
+
+    def test_x8_x9(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x8.wav", self.testSuiteDir + "x9.wav"],
+            "x8_x9", shouldMatch=True)
+
+    def test_wayfaring_x9(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x9.wav"],
+            "wayfaring_x9", shouldMatch=True)
+
+    def test_x9_x7(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x9.wav", self.testSuiteDir + "x7.wav"],
+            "x9_x7", shouldMatch=True)
+
+    def test_x9_x8(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x9.wav", self.testSuiteDir + "x8.wav"],
+            "x9_x8", shouldMatch=True)
+
+    def test_x9_x9(self):
+        self.should_not_produce_errors(
+            [self.runCommand, self.testSuiteDir + "x9.wav", self.testSuiteDir + "x9.wav"],
+            "x9_x9", shouldMatch=True)
+
+
+    def should_not_produce_errors(self, command=[], name="should_not_produce_error", shouldMatch=True):
+        if (shouldMatch):
+            reString = '^MATCH$'
+        else:
+            reString = '^NO MATCH$'
+        matchPattern = re.compile(reString)
+
+        call = Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, cwd=self.testCWD)
+        callOut, callErr = call.communicate()
+        returnCode = call.returncode
+        currLine = 0
+
+        self.assertEquals(returnCode, 0,
+                          msg=name + " - should_not_produce_errors: Return Code Incorrect (Expected:0 Actual:" + str(
+                              returnCode) + ")")
+
+        #Checking Output Message
+        for line in callOut.splitlines():
+            self.assertTrue(matchPattern.match(line),
+                            msg=name + " - should_not_produce_errors: STDOUT incorrect line (Line " + str(
+                                currLine) + ") (Expected:" + reString + " Actual:" + line + ")")
+            currLine += 1
+
+
+if __name__ == "__main__":
+    unittest.main()

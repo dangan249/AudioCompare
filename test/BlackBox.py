@@ -10,86 +10,137 @@ class AudioMatchBlackBox(unittest.TestCase):
     testCWD = os.path.dirname(os.path.abspath(__file__)) + "/../"
     runCommand = os.path.dirname(os.path.abspath(__file__)) + "/../p4500"
 
-    def setUp(self):
-        pass
-
-    def test_input_invalid(self):
-        #tests: empty_args
+    #tests: empty_args
+    def test_empty_args0(self):
         self.should_produce_errors([self.runCommand], "empty_args0")
+
+    def test_empty_args1(self):
         self.should_produce_errors([self.runCommand, " "], "empty_args1")
+
+    def test_empty_args2(self):
         self.should_produce_errors([self.runCommand, "", " "], "empty_args2")
+
+    def test_empty_args3(self):
         self.should_produce_errors([self.runCommand, " ", " "], "empty_args3")
 
-        #tests: nonexistant_input
+    #tests: nonexistant_inputs
+    def test_nonexistant_input0(self):
         self.should_produce_errors([self.runCommand, self.testSuiteDir + "nonexistant.wav"], "nonexistant_input0")
+
+    def test_nonexistant_input1(self):
         self.should_produce_errors([self.runCommand, self.testSuiteDir + "nonexistant", "nonexistant"],
                                    "nonexistant_input1")
+
+    def test_nonexistant_input2(self):
         self.should_produce_errors(
             [self.runCommand, self.testSuiteDir + "nonexistant.wav", self.testSuiteDir + "nonexistant.wav"],
             "nonexistant_input2")
+
+    def test_nonexistant_input3(self):
         self.should_produce_errors(
             [self.runCommand, self.testSuiteDir + "test1_deriv1.wav ", self.testSuiteDir + "nonexistant.wav"],
             "nonexistant_input3")
+
+    def test_nonexistant_input4(self):
         self.should_produce_errors(
             [self.runCommand, self.testSuiteDir + "nonexistant.wav", self.testSuiteDir + "test1_deriv1.wav"],
             "nonexistant_input4")
+
+    def test_nonexistant_input5(self):
         self.should_produce_errors(
             [self.runCommand, self.testSuiteDir + "test_deriv1.wav.wav", self.testSuiteDir + "test1_deriv1.wav"],
             "nonexistant_input5")
+
+    def test_nonexistant_input6(self):
         self.should_produce_errors([self.runCommand, self.testSuiteDir + "test1_orig.wav"], "nonexistant_input6")
+
+    def test_nonexistant_input7(self):
         self.should_produce_errors([self.runCommand, self.testSuiteDir + "test1_orig.wav"], "nonexistant_input7")
 
-        #tests: invalidformat_input
+    #tests: invalidformat_input
+
+    # why should this produce an error?
+    def test_invalidformat_input0(self):
         self.should_produce_errors(
             [self.runCommand, self.testSuiteDir + "test4_deriv1.wav", self.testSuiteDir + "test4_deriv1.wav"],
             "invalidformat_input0")
+
+    # why should this produce an error?
+    def test_invalidformat_input1(self):
         self.should_produce_errors(
             [self.runCommand, self.testSuiteDir + "test4_deriv1.wav", self.testSuiteDir + "test4_deriv2.wav"],
             "invalidformat_input1")
+
+    def test_invalidformat_input2(self):
         self.should_produce_errors(
             [self.runCommand, self.testSuiteDir + "test4_orig.mp3", self.testSuiteDir + "test4_deriv1.wav"],
             "invalidformat_input2")
+
+    # why should this produce an error?
+    def test_invalidformat_input3(self):
         self.should_produce_errors(
             [self.runCommand, self.testSuiteDir + "test1_deriv1.wav", self.testSuiteDir + "test4_deriv1.wav"],
             "invalidformat_input3")
+
+    def test_invalidformat_input4(self):
         self.should_produce_errors(
             [self.runCommand, self.testSuiteDir + "test4_orig.mp3", self.testSuiteDir + "test1_orig.wav"],
             "invalidformat_input4")
 
-    def test_input_valid(self):
-        #Tests: matching_input
+#Tests: matching_input
+
+    def test_matching_input0(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_orig.wav"],
             "matching_input0", shouldMatch=True)
+
+    def test_matching_input1(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test1_deriv1.wav", self.testSuiteDir + "test1_orig.wav"],
             "matching_input1", shouldMatch=True)
+
+    def test_matching_input2(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test1_deriv2.wav", self.testSuiteDir + "test1_deriv1.wav"],
             "matching_input2", shouldMatch=True)
+
+    def test_matching_input3(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_deriv2.wav"],
             "matching_input3", shouldMatch=True)
+
+    def test_matching_input4(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test1_deriv3.wav", self.testSuiteDir + "test1_orig.wav"],
             "matching_input4", shouldMatch=True)
+
+    def test_matching_input5(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test2_orig.wav", self.testSuiteDir + "test2_orig.wav"],
             "matching_input5", shouldMatch=True)
+
+    def test_matching_input6(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test3_orig.wav", self.testSuiteDir + "test3_orig.wav"],
             "matching_input6", shouldMatch=True)
 
-        #Tests: non_matching_input
+    #Tests: non_matching_input
+    def test_non_matching_input0(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test2_orig.wav"],
             "non_matching_input0", shouldMatch=False)
+
+    def test_non_matching_input1(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test1_deriv1.wav", self.testSuiteDir + "test2_orig.wav"],
             "non_matching_input1", shouldMatch=False)
+
+    def test_non_matching_input2(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test1_deriv2.wav", self.testSuiteDir + "test3_orig.wav"],
             "non_matching_input2", shouldMatch=False)
+
+    def test_non_matching_input3(self):
         self.should_not_produce_errors(
             [self.runCommand, self.testSuiteDir + "test3_orig.wav", self.testSuiteDir + "test2_orig.wav"],
             "non_matching_input3", shouldMatch=False)

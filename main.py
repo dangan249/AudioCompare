@@ -26,7 +26,6 @@ def bucket_winners(freq_chunks):
     that are loudest in each "bucket." A bucket is a series of
     frequencies. Return the index of the loudest frequency in each
     bucket in each chunk."""
-    # see fft_test for comments about this section
     chunks = len(freq_chunks)
     max = []
     max_index = []
@@ -66,24 +65,32 @@ def hash(max_index):
     hashes = {}
     for chunk in range(len(max_index)):
         fuzz_factor = 2
-        hash = "".join(["{:d} ".format(fuzz(max_index[chunk][m], fuzz_factor)) for m in range(BUCKETS)])
+        hash = tuple(max_index[chunk])
         hashes[hash] = chunk
 
     return hashes
 
+def hash_distance(h1, h2):
+    if len(h1) != len(h2):
+        raise ValueError("Arguments are sequences of unequal length")
+
+    dist = 0
+    for i in range(len(h1)):
+        dist += abs(h1[i] - h2[i])
+
+    return dist
+
 def audio_matcher():
     """Our main control flow."""
     if len(sys.argv) < 3:
-        print "Must provide two input files."
-        return
+        die("Must provide two input files.")
 
     # Open the two input files
     try:
         file1 = WavInputFile(sys.argv[1])
         file2 = WavInputFile(sys.argv[2])
     except IOError, e:
-        print ("ERROR: {e}".format(e=e))
-        return
+        die(e.message)
 
     # Read the samples from the files, run them through FFT,
     # find the loudest frequencies to use as fingerprints,
@@ -121,5 +128,12 @@ def audio_matcher():
 
     print "NO MATCH"
 
+def die(msg):
+    print "ERROR: {e}".format(e=msg)
+    exit(1)
+
 if __name__ == "__main__":
-    audio_matcher()
+    try:
+        audio_matcher()
+    except Exception, e:
+        die(e.message)
