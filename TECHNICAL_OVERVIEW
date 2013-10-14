@@ -21,3 +21,8 @@ Processing:
 -----------
 FFT
  - Will run a discrete Fourier transform on a set of samples
+
+wang
+ - Uses an approximate implementation of the algorithm
+   described by Avery Li-Chun Wang. Returns True or False,
+   indicating if two audio files match.

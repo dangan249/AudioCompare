@@ -17,7 +17,9 @@ def audio_matcher():
         die(e.message)
         return
 
-    if wang.matcher(file1, file2):
+    # Use our matching system
+    matcher = wang.Wang(file1, file2)
+    if matcher.match():
         print "MATCH"
     else:
         print "NO MATCH"
