@@ -85,7 +85,6 @@ def hash_distance(h1, h2):
     return dist
 
 def matcher(file1, file2):
-
     # Read the samples from the files, run them through FFT,
     # find the loudest frequencies to use as fingerprints,
     # turn those into a hash table.
@@ -112,7 +111,10 @@ def matcher(file1, file2):
     # more than 5 times, we'll say the two files match
     # this is a stupid heuristic that will need to be improved
     #print max(offsets.viewvalues())
-    if len(offsets) != 0 and max(offsets.viewvalues()) >= 5:
+    file1_len = file1.get_total_samples() / file1.get_sample_rate()
+    file2_len = file2.get_total_samples() / file2.get_sample_rate()
+    threshold = 0.2 * min(file1_len, file2_len)
+    if len(offsets) != 0 and max(offsets.viewvalues()) >= threshold:
         return True
     else:
         return False
