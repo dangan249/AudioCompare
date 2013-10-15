@@ -13,6 +13,15 @@ import matplotlib.cm
 
 CHUNK_SIZE = 1024
 
+def apply_bgcolor(a, r, g, b):
+    bg_r = 0.0
+    bg_g = 0.0
+    bg_b = 0.0
+    final_r = ((1 - a) * bg_r) + (a * r)
+    final_g = ((1 - a) * bg_g) + (a * g)
+    final_b = ((1 - a) * bg_b) + (a * b)
+    return (final_r, final_g, final_b)
+
 def visualizer():
     """Display a graph that shows which frequencies we
     will use in our hashing algorithm.
@@ -92,7 +101,8 @@ def visualizer():
                 color = "green"
             else:
                 color_vals = matplotlib.cm.jet(mag)
-                color = "#{r:02x}{g:02x}{g:02x}".format(r=int(color_vals[1]*255), g=int(color_vals[2]*255), b=int(color_vals[3]*255))
+                color_vals = apply_bgcolor(color_vals[0], color_vals[1], color_vals[2], color_vals[3])
+                color = "#{r:02x}{g:02x}{g:02x}".format(r=int(color_vals[0]*255), g=int(color_vals[1]*255), b=int(color_vals[2]*255))
             # make a small rectangle on the screen of the appropriate color
             w.create_rectangle(i*blockSizeX, line*blockSizeY, (i+1)*blockSizeX, (line+1)*blockSizeY, fill=color, width=0)
 

@@ -1,4 +1,5 @@
 import numpy.fft
+import numpy
 from pylab import specgram, window_none
 
 
@@ -13,7 +14,8 @@ class FFT:
 
     def series(self):
         samples = self.input_file.get_audio_samples(self.input_file.get_total_samples())
-        s = specgram(samples[0], NFFT=512, noverlap=0, window=window_none)
+        samples = numpy.array(samples[0])
+        s = specgram(samples, NFFT=512, noverlap=0, window=numpy.hamming(512))
         return s[0].transpose()
 
     def series_raw(self):
@@ -63,3 +65,12 @@ class FFT:
             result[i] = mean
 
         return result
+
+    @staticmethod
+    def __hamming(M):
+        if len(M) < 1:
+            return numpy.array([])
+        if len(M) == 1:
+            return numpy.ones(1,float)
+        n = numpy.arange(0,len(M))
+        return 0.54-0.46*numpy.cos(2.0*numpy.pi*n/(len(M)-1))
