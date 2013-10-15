@@ -62,13 +62,13 @@ class AudioMatchBlackBox(unittest.TestCase):
     # why should this produce an error?
     def test_invalidformat_input0(self):
         self.should_produce_errors(
-            [self.runCommand, self.testSuiteDir + "test4_deriv1.wav", self.testSuiteDir + "test4_deriv1.wav"],
+            [self.runCommand, self.testSuiteDir + "test5_deriv1.wav", self.testSuiteDir + "test5_deriv1.wav"],
             "invalidformat_input0")
 
     # why should this produce an error?
     def test_invalidformat_input1(self):
         self.should_produce_errors(
-            [self.runCommand, self.testSuiteDir + "test4_deriv1.wav", self.testSuiteDir + "test4_deriv2.wav"],
+            [self.runCommand, self.testSuiteDir + "test5_deriv1.mp3", self.testSuiteDir + "test4_deriv2.wav"],
             "invalidformat_input1")
 
     def test_invalidformat_input2(self):
@@ -76,13 +76,7 @@ class AudioMatchBlackBox(unittest.TestCase):
             [self.runCommand, self.testSuiteDir + "test4_orig.mp3", self.testSuiteDir + "test4_deriv1.wav"],
             "invalidformat_input2")
 
-    # why should this produce an error?
     def test_invalidformat_input3(self):
-        self.should_produce_errors(
-            [self.runCommand, self.testSuiteDir + "test1_deriv1.wav", self.testSuiteDir + "test4_deriv1.wav"],
-            "invalidformat_input3")
-
-    def test_invalidformat_input4(self):
         self.should_produce_errors(
             [self.runCommand, self.testSuiteDir + "test4_orig.mp3", self.testSuiteDir + "test1_orig.wav"],
             "invalidformat_input4")

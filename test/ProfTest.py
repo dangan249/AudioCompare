@@ -304,7 +304,7 @@ class AudioMatchBlackBox(unittest.TestCase):
 
     def test_wayfaring_x1(self):
         self.should_not_produce_errors(
-            [self.runCommand, self.False + "wayfaring.wav", self.testSuiteDir + "x1.wav"],
+            [self.runCommand, self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x1.wav"],
             "wayfaring_x1", shouldMatch=False)
 
     def test_wayfaring_x2(self):
