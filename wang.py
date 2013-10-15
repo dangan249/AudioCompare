@@ -112,6 +112,9 @@ class Wang:
         winners1 = Wang.__bucket_winners(fft1)
         winners2 = Wang.__bucket_winners(fft2)
 
+        for i in range(59-32):
+            print winners1[i+32], winners2[i]
+
         # Generate a hash mapping the loudest frequency indices
         # to the chunk numbers
         hash1 = Wang.__hash(winners1)
@@ -132,6 +135,7 @@ class Wang:
                 # chunk found for h2
                 for c1, c2 in itertools.product(hash1[h1], hash2[h2]):
                     offset = c1 - c2
+                    print c1, offset
                     if offset in offsets:
                         offsets[offset] += 1
                     else:
@@ -143,6 +147,7 @@ class Wang:
         # divided by 5 is the number of hits required to declare a
         # MATCH.
         #print max(offsets.viewvalues())
+        #print offsets
         file1_len = self.file1.get_total_samples() / self.file1.get_sample_rate()
         file2_len = self.file2.get_total_samples() / self.file2.get_sample_rate()
         threshold = 0.2 * min(file1_len, file2_len)
