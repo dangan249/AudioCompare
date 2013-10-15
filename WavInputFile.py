@@ -43,9 +43,9 @@ class WavInputFile(AbstractInputFile):
             raise IOError("{f} must be a valid WAVE_FORMAT_PCM file".format(f=filename))
 
         # get some info from the file header
-        self.channels = self.__read_short(fmt_data[2:4])
-        self.sample_rate = self.__read_int(fmt_data[4:8])
-        self.block_align = self.__read_short(fmt_data[12:14])
+        self.channels = self.__read_ushort(fmt_data[2:4])
+        self.sample_rate = self.__read_uint(fmt_data[4:8])
+        self.block_align = self.__read_ushort(fmt_data[12:14])
 
         self.data_chunk = chunk.Chunk(riff_data_io, bigendian=False)
         self.total_samples = (self.data_chunk.getsize() / self.block_align)
@@ -69,7 +69,7 @@ class WavInputFile(AbstractInputFile):
     @staticmethod
     def __check_fmt(file):
         fmt = file.read(4)
-        size = WavInputFile.__read_int(file.read(4))
+        size = WavInputFile.__read_uint(file.read(4))
         if fmt == "fmt " and size in [16, 18, 20]:
             return True
         else:
@@ -77,19 +77,24 @@ class WavInputFile(AbstractInputFile):
 
     @staticmethod
     def __check_fmt_valid(data):
-        format_tag = WavInputFile.__read_short(data[0:2])
+        format_tag = WavInputFile.__read_ushort(data[0:2])
         if format_tag == 1:
             return True
         else:
             return False
 
     @staticmethod
-    def __read_short(data):
+    def __read_ushort(data):
         """Turn a 2-byte little endian number into a Python number."""
         return struct.unpack("<H", data)[0]
 
     @staticmethod
-    def __read_int(data):
+    def __read_short(data):
+        """Turn a 2-byte little endian number into a Python number."""
+        return struct.unpack("<h", data)[0]
+
+    @staticmethod
+    def __read_uint(data):
         """Turn a 4-byte little endian number into a Python number."""
         return struct.unpack("<I", data)[0]
 
