@@ -8,15 +8,26 @@ Semester Project
 
 Team Members
 ------------
-An Dang -- dang.an249@gmail.com
-Corey Finger -- finger.c@husky.neu.edu
-Zheng Hui Er -- erzhenghui@gmail.com
+An Dang         -- dang.an249@gmail.com
+Corey Finger    -- finger.c@husky.neu.edu
+Zheng Hui Er    -- erzhenghui@gmail.com
 Charles Connell -- charles@connells.org
 
 Run Instructions
 ----------------
-put something here...
+To run our program in this directory, type:
+   ./p4500 <file1.wav> <file2.wav>
+
+If no errors, the output will be the string
+"MATCH" or "NO MATCH". If an error, a string
+starting with "ERROR: " will be output.
+
+Input files must be WAVE files. You may list
+the same file twice.
 
 Third-Party Software Acknowledgements
 -------------------------------------
-put something here?
+We make heavy use of Python's standard library
+
+We use the Python module numpy to perform the
+Discrete Fourier Transform
