@@ -18,6 +18,10 @@ Run Instructions
 To run our program in this directory, type:
    ./p4500 <file1.wav> <file2.wav>
 
+There must be an executable called "python2.7"
+in your path. This is not present on all CCIS
+Linux machines, but it is present on some.
+
 If no errors, the output will be the string
 "MATCH" or "NO MATCH". If an error, a string
 starting with "ERROR: " will be output.
