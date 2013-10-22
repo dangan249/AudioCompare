@@ -3,6 +3,7 @@ import math
 import itertools
 import numpy as np
 from collections import defaultdict
+import time
 
 # This algorithm is based on the Shazam algorithm,
 # described here http://www.redcode.nl/blog/2010/06/creating-shazam-in-java/
@@ -87,6 +88,8 @@ class Wang:
         and returns a boolean as output, indicating
         if the two files match."""
 
+        start = time.time()
+
         # Read the samples from the files, run them through FFT,
         # find the loudest frequencies to use as fingerprints,
         # turn those into a hash table.
@@ -97,15 +100,24 @@ class Wang:
         fft1 = FFT(self.file1, CHUNK_SIZE).series(f=UPPER_LIMIT)
         fft2 = FFT(self.file2, CHUNK_SIZE).series(f=UPPER_LIMIT)
 
+        #print "after FFT"
+        #print time.time() - start
+
         # Find the indices of the loudest frequencies
         # in each "bucket" of frequencies (for every chunk)
         winners1 = Wang.__bucket_winners(fft1)
         winners2 = Wang.__bucket_winners(fft2)
 
+       # print "after winners"
+       # print time.time() - start
+
         # Generate a hash mapping the loudest frequency indices
         # to the chunk numbers
         hash1 = Wang.__hash(winners1)
         hash2 = Wang.__hash(winners2)
+
+        #print "after hashes"
+        #print time.time() - start
 
         # the difference in chunk numbers of
         # the matches we will find.
@@ -114,15 +126,24 @@ class Wang:
         offsets = defaultdict(lambda: 0)
         # compare every key in hash1 with every key
         # in hash 2
-        for h1, h2 in itertools.product(hash1, hash2):
+        #for h1, h2 in itertools.product(hash1, hash2):
             # if the two audio fingerprints are similar,
             # examine every place they occur
-            if Wang.__hash_distance(h1, h2) < MAX_HASH_DISTANCE:
+        #    if Wang.__hash_distance(h1, h2) < MAX_HASH_DISTANCE:
                 # compare every chunk found for h1 with every
                 # chunk found for h2
-                for c1, c2 in itertools.product(hash1[h1], hash2[h2]):
+        #        for c1, c2 in itertools.product(hash1[h1], hash2[h2]):
+        #            offset = c1 - c2
+        #            offsets[offset] += 1
+
+        for h1 in hash1:
+            if h1 in hash2:
+                for c1, c2 in itertools.product(hash1[h1], hash2[h1]):
                     offset = c1 - c2
                     offsets[offset] += 1
+
+        #print "after lookups"
+        #print time.time() - start
 
         # Let's assume that matching audio segments will only
         # generate 1 genuine "hit" for every 5 seconds of audio.
@@ -134,6 +155,10 @@ class Wang:
         file1_len = self.file1.get_total_samples() / self.file1.get_sample_rate()
         file2_len = self.file2.get_total_samples() / self.file2.get_sample_rate()
         threshold = 20 * min(file1_len, file2_len)
+
+        #print "after threshold"
+        #print time.time() - start
+
         if len(offsets) != 0 and max(offsets.viewvalues()) >= threshold:
             return True
         else:
