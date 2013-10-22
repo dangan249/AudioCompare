@@ -1,6 +1,7 @@
 import chunk
 import StringIO
 import struct
+import numpy as np
 from AbstractInputFile import AbstractInputFile
 
 
@@ -110,7 +111,7 @@ class WavInputFile(AbstractInputFile):
         data = self.data_chunk.read(bytes)
         if len(data) == 0:
             raise EOFError
-        result = [[0]*n]*self.channels
+        result = np.zeros((self.channels, n), dtype=int)
         channel = 0
         sample = 0
         for i in range(0, len(data), self.block_align):

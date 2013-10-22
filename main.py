@@ -25,7 +25,7 @@ def audio_matcher():
         print "NO MATCH"
 
 if __name__ == "__main__":
-    try:
-        audio_matcher()
-    except Exception, e:
-        die(e.message)
+   # try:
+    audio_matcher()
+    #except Exception, e:
+    #    die(e.message)
