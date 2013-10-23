@@ -364,7 +364,7 @@ class AudioMatchBlackBox(unittest.TestCase):
 
     def test_x1_x12(self):
         self.should_not_produce_errors(
-            [self.runCommand, self.testSuiteDir + "x1.wav", self.testSuiteDir + "12.wav"],
+            [self.runCommand, self.testSuiteDir + "x1.wav", self.testSuiteDir + "x12.wav"],
             "x1_x12", shouldMatch=False)
 
     def should_not_produce_errors(self, command=[], name="should_not_produce_error", shouldMatch=True):
