@@ -1,9 +1,9 @@
 from FFT import FFT
-import math
 import itertools
 import numpy as np
 from collections import defaultdict
-import time
+import multiprocessing
+from WavInputFile import WavInputFile
 
 # This algorithm is based on the Shazam algorithm,
 # described here http://www.redcode.nl/blog/2010/06/creating-shazam-in-java/
@@ -18,87 +18,92 @@ CHUNK_SIZE = 1024
 MAX_HASH_DISTANCE = 2
 
 
+def _bucket_winners(freq_chunks):
+    """Examine the results of running chunks of audio
+    samples through FFT. For each chunk, look at the frequencies
+    that are loudest in each "bucket." A bucket is a series of
+    frequencies. Return the index of the loudest frequency in each
+    bucket in each chunk."""
+    chunks = len(freq_chunks)
+    max_index = np.zeros((chunks, BUCKETS))
+    # Examine each chunk independently
+    for chunk in range(chunks):
+        for bucket in range(BUCKETS):
+            start_index = bucket * BUCKET_SIZE
+            end_index = (bucket + 1) * BUCKET_SIZE
+            bucket_vals = freq_chunks[chunk][start_index:end_index]
+            raw_max_index = bucket_vals.argmax()
+            max_index[chunk][bucket] = raw_max_index + start_index
+
+    # return the indexes of the loudest frequencies
+    return max_index
+
+
+def _hash(max_index):
+    """Turn the indexes of the loudest frequencies
+    into a hash table. The frequency indices joined together
+    into a tuple are the keys, and the chunk indices are
+    the values. This means we can look up a sound fingerprint and find
+    what time that sound happened in the audio recording."""
+    hashes = defaultdict(list)
+    for chunk in range(len(max_index)):
+        hash = tuple(max_index[chunk])
+        hashes[hash].append(chunk)
+
+    return hashes
+
+
+def _hash_distance(h1, h2):
+    """The total difference between
+    each number in two equal-length tuples."""
+    if len(h1) != len(h2):
+        raise ValueError("Arguments are sequences of unequal length")
+
+    dist = 0
+    for i in range(len(h1)):
+        dist += abs(h1[i] - h2[i])
+
+    return dist
+
+
+def _file_fingerprint(filename):
+    """Read the samples from the files, run them through FFT,
+    find the loudest frequencies to use as fingerprints,
+    turn those into a hash table."""
+
+    # Open the file
+    file = WavInputFile(filename)
+
+    # Read samples from the input files, divide them
+    # into chunks, and convert the samples in each
+    # chunk into the frequency domain
+    fft = FFT(file, CHUNK_SIZE).series()
+
+    # Find the indices of the loudest frequencies
+    # in each "bucket" of frequencies (for every chunk)
+    winners = _bucket_winners(fft)
+
+    # Generate a hash mapping the loudest frequency indices
+    # to the chunk numbers
+    return _hash(winners)
+
 class Wang:
     def __init__(self, file1, file2):
-        self.file1 = file1
-        self.file2 = file2
-
-    @staticmethod
-    def __get_bucket(freq_index):
-        return freq_index / BUCKET_SIZE
-
-    @staticmethod
-    def __bucket_winners(freq_chunks):
-        """Examine the results of running chunks of audio
-        samples through FFT. For each chunk, look at the frequencies
-        that are loudest in each "bucket." A bucket is a series of
-        frequencies. Return the index of the loudest frequency in each
-        bucket in each chunk."""
-        chunks = len(freq_chunks)
-        max_index = np.zeros((chunks, BUCKETS))
-        # Examine each chunk independently
-        for chunk in range(chunks):
-            for bucket in range(BUCKETS):
-                start_index = bucket * BUCKET_SIZE
-                end_index = (bucket + 1) * BUCKET_SIZE
-                bucket_vals = freq_chunks[chunk][start_index:end_index]
-                raw_max_index = bucket_vals.argmax()
-                max_index[chunk][bucket] = raw_max_index + start_index
-
-        # return the indexes of the loudest frequencies
-        return max_index
-
-    @staticmethod
-    def __hash(max_index):
-        """Turn the indexes of the loudest frequencies
-        into a hash table. The frequency indices joined together
-        into a tuple are the keys, and the chunk indices are
-        the values. This means we can look up a sound fingerprint and find
-        what time that sound happened in the audio recording."""
-        hashes = defaultdict(list)
-        for chunk in range(len(max_index)):
-            hash = tuple(max_index[chunk])
-            hashes[hash].append(chunk)
-
-        return hashes
-
-    @staticmethod
-    def __hash_distance(h1, h2):
-        """The total difference between
-        each number in two equal-length tuples."""
-        if len(h1) != len(h2):
-            raise ValueError("Arguments are sequences of unequal length")
-
-        dist = 0
-        for i in range(len(h1)):
-            dist += abs(h1[i] - h2[i])
-
-        return dist
+        self.filename1 = file1
+        self.filename2 = file2
 
     def match(self):
         """Takes two AbstractInputFiles as input,
         and returns a boolean as output, indicating
         if the two files match."""
 
-        # Read the samples from the files, run them through FFT,
-        # find the loudest frequencies to use as fingerprints,
-        # turn those into a hash table.
+        try:
+            num_processes = multiprocessing.cpu_count()
+        except NotImplementedError:
+            num_processes = 2
+        pool = multiprocessing.Pool(processes=num_processes)
 
-        # Read samples from the input files, divide them
-        # into chunks, and convert the samples in each
-        # chunk into the frequency domain
-        fft1 = FFT(self.file1, CHUNK_SIZE).series(f=UPPER_LIMIT)
-        fft2 = FFT(self.file2, CHUNK_SIZE).series(f=UPPER_LIMIT)
-
-        # Find the indices of the loudest frequencies
-        # in each "bucket" of frequencies (for every chunk)
-        winners1 = Wang.__bucket_winners(fft1)
-        winners2 = Wang.__bucket_winners(fft2)
-
-        # Generate a hash mapping the loudest frequency indices
-        # to the chunk numbers
-        hash1 = Wang.__hash(winners1)
-        hash2 = Wang.__hash(winners2)
+        hash1, hash2 = pool.map(_file_fingerprint, [self.filename1, self.filename2])
 
         # the difference in chunk numbers of
         # the matches we will find.
@@ -118,10 +123,12 @@ class Wang:
         # divided by 5 is the number of hits required to declare a
         # MATCH.
         #print max(offsets.viewvalues())
-        #print sorted(offsets.values())
-        file1_len = self.file1.get_total_samples() / self.file1.get_sample_rate()
-        file2_len = self.file2.get_total_samples() / self.file2.get_sample_rate()
+        file1 = WavInputFile(self.filename1)
+        file2 = WavInputFile(self.filename2)
+        file1_len = file1.get_total_samples() / file1.get_sample_rate()
+        file2_len = file2.get_total_samples() / file2.get_sample_rate()
         threshold = 20 * min(file1_len, file2_len)
+        #print threshold
 
         if len(offsets) != 0 and max(offsets.viewvalues()) >= threshold:
             return True

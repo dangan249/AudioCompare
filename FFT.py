@@ -14,7 +14,7 @@ class FFT:
         self.input_file = input_file
         self.chunk_size = chunk_size
 
-    def series(self, chunks=-1, f=-1):
+    def series(self, chunks=-1):
         """Return the FFTs of samples of audio chunks. The number of FFT bins will be almost
         double the number of chunks, because we compute two bins per chunk, one that is
         halfway overlapping the next one.

@@ -30,7 +30,7 @@ def visualizer():
         print ("ERROR: {e}".format(e=e))
         return
 
-    freq_chunks = FFT(input_file, CHUNK_SIZE).series3()
+    freq_chunks = FFT(input_file, CHUNK_SIZE).series()
 
     norm = LogNorm(0.000000001, numpy.amax(freq_chunks))
 

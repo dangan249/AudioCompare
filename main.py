@@ -3,29 +3,33 @@ import sys
 from WavInputFile import WavInputFile
 from error import *
 import wang
+from optparse import OptionParser
 
 def audio_matcher():
     """Our main control flow."""
+
+    parser = OptionParser()
+    parser.add_option("--test",
+                  action="store_true", dest="test", default=False,
+                  help="Run in test mode (shows stacktraces on error)")
+
+    (options, args) = parser.parse_args()
+
     if len(sys.argv) < 3:
         die("Must provide two input files.")
 
-    # Open the two input files
+    # Use our matching system
     try:
-        file1 = WavInputFile(sys.argv[1])
-        file2 = WavInputFile(sys.argv[2])
+        matcher = wang.Wang(sys.argv[1], sys.argv[2])
+        if matcher.match():
+            print "MATCH"
+        else:
+            print "NO MATCH"
     except IOError, e:
+        if options.test:
+            raise
         die(e.message)
         return
 
-    # Use our matching system
-    matcher = wang.Wang(file1, file2)
-    if matcher.match():
-        print "MATCH"
-    else:
-        print "NO MATCH"
-
 if __name__ == "__main__":
-    try:
-        audio_matcher()
-    except Exception, e:
-        die(e.message)
+    audio_matcher()
