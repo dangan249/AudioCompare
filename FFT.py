@@ -1,37 +1,80 @@
-import numpy.fft
-import scipy
+import numpy as np
+import time
 
 
 class FFT:
     """A mechanism for identifying the dominant frequencies
     in time ranges in an audio file."""
-    def __init__(self, input_file, chunk_size=8196):
+    def __init__(self, input_file, chunk_size=1024):
         """Set up an file for FFT processing.
-        The constructor doesn't actually do the processing."""
+        The constructor doesn't actually do the processing.
+        @param input_file The file we'll read audio data from. The should
+        be a AbstractInputFile-like object
+        @param chunk_size The size of the chunks to put through FFT."""
         self.input_file = input_file
         self.chunk_size = chunk_size
 
-    def series(self, chunks=-1):
-        """Returns an array of arrays. The outer array contains
-         one array for each chunk of the file that
-         we examine. Each chunk result in an array of numbers
-         that describe the relative amplitude of certain
-         frequencies within that chunk. The actual frequencies
-         can be determined by the base frequency multiplied by the
-         index in the array(?).
-         If no number of chunks is specified, run over the entire file."""
-        result = []
+    def series(self, chunks=-1, f=-1):
+        """Return the FFTs of samples of audio chunks. The number of FFT bins will be almost
+        double the number of chunks, because we compute two bins per chunk, one that is
+        halfway overlapping the next one.
+        @param chunks The number of chunks to read and return. -1 means all. Must be positive number
+        otherwise. If there isn't enough audio data to read all of these chunks, we may read less.
+        @param f The number of frequency values to return per chunk. -1 means all. Must be positive number
+        less than chunk size otherwise."""
+
         if chunks == -1:
             chunks = self.input_file.get_total_samples() / self.chunk_size
-        for i in range(chunks):
-            try:
-                samples = self.input_file.get_audio_samples(self.chunk_size)[0] # use channel 0
-                result.append(numpy.fft.rfft(samples))
-            except EOFError:
-                break
+
+        # get all the audio samples we'll be working with
+        samples = self.input_file.get_audio_samples(chunks * self.chunk_size)
+        # mix those samples down into one channel
+        samples = samples.mean(axis=0)
+        result = self.specgram(samples, NFFT=self.chunk_size, window=FFT.__window_hanning, noverlap=self.chunk_size/2)
+        result = result.transpose()
         return result
+
+    def specgram(self, x, NFFT, window, noverlap):
+        """Compute a spectrogram of the given audio samples.
+        This is a stripped-down version of the code inside
+        pylab.specgram()."""
+        numFreqs = NFFT//2 + 1
+        windowVals = window(np.ones((NFFT,), x.dtype))
+
+        step = NFFT - noverlap
+        ind = np.arange(0, len(x) - NFFT + 1, step)
+        n = len(ind)
+        Pxx = np.zeros((numFreqs, n), np.complex_)
+
+        # do the ffts of the slices
+        for i in range(n):
+            thisX = x[ind[i]:ind[i]+NFFT]
+            thisX = windowVals * thisX
+            fx = np.fft.fft(thisX, n=NFFT)
+            Pxx[:,i] = np.conjugate(fx[:numFreqs]) * fx[:numFreqs]
+
+        return Pxx
 
     def base_freq(self):
         """Returns the base frequency. This is the frequency corresponding
         to the first index in the arrays returned by series()(?)."""
         return float(self.input_file.get_sample_rate()) / float(self.chunk_size)
+
+    @staticmethod
+    def __window_hanning(x):
+        "return x times the hanning window of len(x)"
+        return np.hanning(len(x))*x
+
+    @staticmethod
+    def __mix(samples):
+        """Mix an arbitrary number of channels into one."""
+        result = np.zeros(samples.shape[1])
+        channels = len(samples)
+        for i in range(len(result)):
+            sum = 0
+            for j in range(channels):
+                sum += samples[j][i]
+            mean = sum / channels
+            result[i] = mean
+
+        return result
