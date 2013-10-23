@@ -35,23 +35,15 @@ class Wang:
         frequencies. Return the index of the loudest frequency in each
         bucket in each chunk."""
         chunks = len(freq_chunks)
-        max = np.zeros((chunks, UPPER_LIMIT))
-        max_index = np.zeros((chunks, UPPER_LIMIT))
+        max_index = np.zeros((chunks, BUCKETS))
         # Examine each chunk independently
         for chunk in range(chunks):
-            # Look through some (or all) of the frequencies returned by FFT
-            for freq in range(UPPER_LIMIT):
-                # Compute the log of the magnitude of the audio at this
-                # frequency.
-                val = freq_chunks[chunk][freq]
-                abs = math.sqrt((val.real * val.real) + (val.imag * val.imag)) + 1
-                mag = math.log(abs)
-                bucket = freq / BUCKET_SIZE
-                # is this frequency louder than the previous loudest one
-                # in this bucket?
-                if mag > max[chunk][bucket]:
-                    max[chunk][bucket] = mag
-                    max_index[chunk][bucket] = freq
+            for bucket in range(BUCKETS):
+                start_index = bucket * BUCKET_SIZE
+                end_index = (bucket + 1) * BUCKET_SIZE
+                bucket_vals = freq_chunks[chunk][start_index:end_index]
+                raw_max_index = bucket_vals.argmax()
+                max_index[chunk][bucket] = raw_max_index + start_index
 
         # return the indexes of the loudest frequencies
         return max_index
@@ -88,8 +80,6 @@ class Wang:
         and returns a boolean as output, indicating
         if the two files match."""
 
-        start = time.time()
-
         # Read the samples from the files, run them through FFT,
         # find the loudest frequencies to use as fingerprints,
         # turn those into a hash table.
@@ -100,50 +90,27 @@ class Wang:
         fft1 = FFT(self.file1, CHUNK_SIZE).series(f=UPPER_LIMIT)
         fft2 = FFT(self.file2, CHUNK_SIZE).series(f=UPPER_LIMIT)
 
-        #print "after FFT"
-        #print time.time() - start
-
         # Find the indices of the loudest frequencies
         # in each "bucket" of frequencies (for every chunk)
         winners1 = Wang.__bucket_winners(fft1)
         winners2 = Wang.__bucket_winners(fft2)
-
-       # print "after winners"
-       # print time.time() - start
 
         # Generate a hash mapping the loudest frequency indices
         # to the chunk numbers
         hash1 = Wang.__hash(winners1)
         hash2 = Wang.__hash(winners2)
 
-        #print "after hashes"
-        #print time.time() - start
-
         # the difference in chunk numbers of
         # the matches we will find.
         # maps differences to number of matches
         # found with that difference
         offsets = defaultdict(lambda: 0)
-        # compare every key in hash1 with every key
-        # in hash 2
-        #for h1, h2 in itertools.product(hash1, hash2):
-            # if the two audio fingerprints are similar,
-            # examine every place they occur
-        #    if Wang.__hash_distance(h1, h2) < MAX_HASH_DISTANCE:
-                # compare every chunk found for h1 with every
-                # chunk found for h2
-        #        for c1, c2 in itertools.product(hash1[h1], hash2[h2]):
-        #            offset = c1 - c2
-        #            offsets[offset] += 1
 
         for h1 in hash1:
             if h1 in hash2:
                 for c1, c2 in itertools.product(hash1[h1], hash2[h1]):
                     offset = c1 - c2
                     offsets[offset] += 1
-
-        #print "after lookups"
-        #print time.time() - start
 
         # Let's assume that matching audio segments will only
         # generate 1 genuine "hit" for every 5 seconds of audio.
@@ -155,9 +122,6 @@ class Wang:
         file1_len = self.file1.get_total_samples() / self.file1.get_sample_rate()
         file2_len = self.file2.get_total_samples() / self.file2.get_sample_rate()
         threshold = 20 * min(file1_len, file2_len)
-
-        #print "after threshold"
-        #print time.time() - start
 
         if len(offsets) != 0 and max(offsets.viewvalues()) >= threshold:
             return True

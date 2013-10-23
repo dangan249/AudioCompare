@@ -1,5 +1,5 @@
 import numpy as np
-from pylab import specgram, window_none
+import time
 
 
 class FFT:
@@ -22,26 +22,48 @@ class FFT:
         otherwise. If there isn't enough audio data to read all of these chunks, we may read less.
         @param f The number of frequency values to return per chunk. -1 means all. Must be positive number
         less than chunk size otherwise."""
-        # handle EOFError?
-        # is the window doing anything?
+
         if chunks == -1:
             chunks = self.input_file.get_total_samples() / self.chunk_size
+
         # get all the audio samples we'll be working with
         samples = self.input_file.get_audio_samples(chunks * self.chunk_size)
         # mix those samples down into one channel
-        mixed_samples = FFT.__mix(samples)
-        # numpy.specgram will perform many FFTs over the sample, using bins equal to the chunk size
-        s = specgram(mixed_samples, NFFT=self.chunk_size, noverlap=self.chunk_size/2, window=np.hamming(self.chunk_size))
-        # specgram returns a bunch of things, just take the important stuff
-        freqs = s[0]
-        if f != -1:
-            freqs = freqs.take(range(f), axis=0)
-        return freqs.transpose()
+        samples = samples.mean(axis=0)
+        result = self.specgram(samples, NFFT=self.chunk_size, window=FFT.__window_hanning, noverlap=self.chunk_size/2)
+        result = result.transpose()
+        return result
+
+    def specgram(self, x, NFFT, window, noverlap):
+        """Compute a spectrogram of the given audio samples.
+        This is a stripped-down version of the code inside
+        pylab.specgram()."""
+        numFreqs = NFFT//2 + 1
+        windowVals = window(np.ones((NFFT,), x.dtype))
+
+        step = NFFT - noverlap
+        ind = np.arange(0, len(x) - NFFT + 1, step)
+        n = len(ind)
+        Pxx = np.zeros((numFreqs, n), np.complex_)
+
+        # do the ffts of the slices
+        for i in range(n):
+            thisX = x[ind[i]:ind[i]+NFFT]
+            thisX = windowVals * thisX
+            fx = np.fft.fft(thisX, n=NFFT)
+            Pxx[:,i] = np.conjugate(fx[:numFreqs]) * fx[:numFreqs]
+
+        return Pxx
 
     def base_freq(self):
         """Returns the base frequency. This is the frequency corresponding
         to the first index in the arrays returned by series()(?)."""
         return float(self.input_file.get_sample_rate()) / float(self.chunk_size)
+
+    @staticmethod
+    def __window_hanning(x):
+        "return x times the hanning window of len(x)"
+        return np.hanning(len(x))*x
 
     @staticmethod
     def __mix(samples):
