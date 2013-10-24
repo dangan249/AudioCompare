@@ -16,7 +16,7 @@ Charles Connell -- charles@connells.org
 Run Instructions
 ----------------
 To run our program in this directory, type:
-   ./p4500 <file1.wav> <file2.wav>
+   ./p4500 -f <file1.wav> -f <file2.wav>
 
 There must be an executable called "python2.7"
 in your path. This is not present on all CCIS
@@ -31,7 +31,12 @@ the same file twice.
 
 Third-Party Software Acknowledgements
 -------------------------------------
-We make heavy use of Python's standard library
+We make heavy use of Python's standard library.
 
-We use the Python module numpy to perform the
-Discrete Fourier Transform
+We make heavy use of the libraries `numpy',
+and `matplotlib'.
+
+There are about 15 lines of code in FFT.py that
+are a modified version of some code inside
+matplotlib. This usage was approved.
+
