@@ -2,6 +2,7 @@ import sys
 from WavInputFile import WavInputFile
 from Tkinter import *
 from wang import *
+import wang
 from FFT import FFT
 import numpy
 
@@ -34,7 +35,7 @@ def visualizer():
 
     norm = LogNorm(0.000000001, numpy.amax(freq_chunks))
 
-    winners = Wang._Wang__bucket_winners(freq_chunks)
+    winners = wang._bucket_winners(freq_chunks)
 
     # initialize an empty window
     master = Tk()
@@ -58,7 +59,7 @@ def visualizer():
 
             # assign color to red if winning frequency,
             # otherwise some shade of grey
-            bucket = Wang._Wang__get_bucket(line)
+            bucket = line / BUCKET_SIZE
             if (line) % BUCKET_SIZE == 0:
                 color = "blue"
             elif line == winners[i][bucket]:
