@@ -2,12 +2,14 @@
 from error import *
 import wang
 from argparse import ArgumentParser
+import argparse
 
 def audio_matcher():
     """Our main control flow."""
 
-    parser = ArgumentParser(description="Compare to audio files to determine if one"
-                                        "was derived from the other.")
+    parser = ArgumentParser(description="Compare two audio files to determine if one "
+                                        "was derived from the other.",
+                            prog="p4500")
     parser.add_argument("-f", action="append", required=False, dest="files", default=list(),
                         help="A file to examine. Must provide two instance of this argument.")
     parser.add_argument("--test",
