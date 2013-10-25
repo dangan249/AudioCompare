@@ -2,7 +2,6 @@
 from error import *
 import wang
 from argparse import ArgumentParser
-import argparse
 
 def audio_matcher():
     """Our main control flow."""
@@ -23,8 +22,8 @@ def audio_matcher():
             raise
         die(e.message)
 
-    if len(args.files) < 2:
-        die("Must provide two input files.")
+    if len(args.files) != 2:
+        die("Must provide exactly two input files.")
 
     # Use our matching system
     try:
@@ -36,7 +35,7 @@ def audio_matcher():
     except IOError, e:
         if args.test:
             raise
-        die(e.message)
+        die(e)
         return
 
 if __name__ == "__main__":

@@ -126,5 +126,4 @@ class WavInputFile(AbstractInputFile):
 
     def close(self):
         """Close the input file."""
-        self.data_chunk.close()
         self.wav_file.close()

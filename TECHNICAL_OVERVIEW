@@ -19,10 +19,57 @@ WavInputFile:
 
 Processing:
 -----------
-FFT
- - Will run a discrete Fourier transform on a set of samples
+Open each file.
 
-wang
- - Uses an approximate implementation of the algorithm
-   described by Avery Li-Chun Wang. Returns True or False,
-   indicating if two audio files match.
+Read samples from the input files, divide them
+into chunks by time, and convert the samples in each
+chunk into the frequency domain.
+
+Find the indices of the loudest frequencies
+in each "bucket" of frequencies (for every chunk).
+These loud frequencies will become the
+fingerprints that we'll use for matching.
+Each chunk will be reduced to a tuple of
+4 numbers which are 4 of the loudest frequencies
+in that chunk.
+
+Generate a hash mapping the fingerprints
+to the chunk numbers that they occurred in.
+Chunk numbers are an approximation for the
+timestamp in the file, and we'll use them
+that way further on.
+
+Create a mapping called offests
+to hold the difference in chunk numbers of
+the matches we will find.
+We'll map those differences to the number of matches
+found with that difference.
+This allows us to see if many fingerprints
+from different files occurred at the same
+time offsets relative to each other.
+
+Look to see if fingerprints from file 1
+also were found in file 2. For matching
+fingerprints, look up the the times (chunk number)
+that the fingerprint occurred
+in each file. Store the time differences in
+offsets. The point of this is to see if there
+are many matching fingerprints at the
+same time difference relative to each
+other. This indicates that the two files
+contain similar audio.
+
+The length of the shorter file in important
+to deciding whether two audio files match.
+
+max_offset is the highest number of times that two matching
+hash keys were found with the same time difference
+relative to each other.
+
+The match score is the ratio of max_offset (as explained above)
+to the length of the shorter file. A short file that should
+match another file will result in less matching fingerprints
+than a long file would, so we take this into account. At the
+same time, a long file that should *not* match another file
+will generate a decent number of matching fingerprints by
+pure chance, so this corrects for that as well.

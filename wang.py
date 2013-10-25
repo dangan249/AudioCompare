@@ -2,7 +2,6 @@ from FFT import FFT
 import itertools
 import numpy as np
 from collections import defaultdict
-import multiprocessing
 from WavInputFile import WavInputFile
 
 # This algorithm is based on the Shazam algorithm,
@@ -76,16 +75,26 @@ def _file_fingerprint(filename):
     file = WavInputFile(filename)
 
     # Read samples from the input files, divide them
-    # into chunks, and convert the samples in each
-    # chunk into the frequency domain
+    # into chunks by time, and convert the samples in each
+    # chunk into the frequency domain.
     fft = FFT(file, CHUNK_SIZE).series()
 
+    file.close()
+
     # Find the indices of the loudest frequencies
-    # in each "bucket" of frequencies (for every chunk)
+    # in each "bucket" of frequencies (for every chunk).
+    # These loud frequencies will become the
+    # fingerprints that we'll use for matching.
+    # Each chunk will be reduced to a tuple of
+    # 4 numbers which are 4 of the loudest frequencies
+    # in that chunk.
     winners = _bucket_winners(fft)
 
-    # Generate a hash mapping the loudest frequency indices
-    # to the chunk numbers
+    # Generate a hash mapping the fingerprints
+    # to the chunk numbers that they occurred in.
+    # Chunk numbers are an approximation for the
+    # timestamp in the file, and we'll use them
+    # that way further on.
     return _hash(winners)
 
 class Wang:
@@ -97,52 +106,59 @@ class Wang:
         and returns a boolean as output, indicating
         if the two files match."""
 
-        try:
-            num_processes = multiprocessing.cpu_count()
-        except NotImplementedError:
-            num_processes = 2
-        #pool = multiprocessing.Pool(processes=num_processes)
-
-        #hash1, hash2 = pool.map(_file_fingerprint, self.filenames)
+        # Get the fingerprints from each input file.
         hash1, hash2 = map(_file_fingerprint, self.filenames)
 
-        # the difference in chunk numbers of
+        # The difference in chunk numbers of
         # the matches we will find.
-        # maps differences to number of matches
-        # found with that difference
+        # We'll map those differences to the number of matches
+        # found with that difference.
+        # This allows us to see if many fingerprints
+        # from different files occurred at the same
+        # time offsets relative to each other.
         offsets = defaultdict(lambda: 0)
 
+        # Look to see if fingerprints from file 1
+        # also were found in file 2. For matching
+        # fingerprints, look up the the times (chunk number)
+        # that the fingerprint occurred
+        # in each file. Store the time differences in
+        # offsets. The point of this is to see if there
+        # are many matching fingerprints at the
+        # same time difference relative to each
+        # other. This indicates that the two files
+        # contain similar audio.
         for h1 in hash1:
             if h1 in hash2:
                 for c1, c2 in itertools.product(hash1[h1], hash2[h1]):
                     offset = c1 - c2
                     offsets[offset] += 1
 
-        #for h1, h2 in itertools.product(hash1, hash2):
-        #    if _hash_distance(h1, h2) < MAX_HASH_DISTANCE:
-        #        for c1, c2 in itertools.product(hash1[h1], hash2[h1]):
-        #            offset = c1 - c2
-        #            offsets[offset] += 1
-
-        # Let's assume that matching audio segments will only
-        # generate 1 genuine "hit" for every 5 seconds of audio.
-        # Whatever our shorter file is, the length of it in seconds
-        # divided by 5 is the number of hits required to declare a
-        # MATCH.
-        #print max(offsets.viewvalues())
-        #print sorted(offsets.values())
+        # Get the length of each file in seconds
         file1 = WavInputFile(self.filenames[0])
         file2 = WavInputFile(self.filenames[1])
         file1_len = file1.get_total_samples() / file1.get_sample_rate()
         file2_len = file2.get_total_samples() / file2.get_sample_rate()
 
+        # The length of the shorter file in important
+        # to deciding whether two audio files match.
         min_len = min(file1_len, file2_len)
 
+        # max_offset is the highest number of times that two matching
+        # hash keys were found with the same time difference
+        # relative to each other.
         if len(offsets) != 0:
             max_offset = max(offsets.viewvalues())
         else:
             max_offset = 0
 
+        # The score is the ratio of max_offset (as explained above)
+        # to the length of the shorter file. A short file that should
+        # match another file will result in less matching fingerprints
+        # than a long file would, so we take this into account. At the
+        # same time, a long file that should *not* match another file
+        # will generate a decent number of matching fingerprints by
+        # pure chance, so this corrects for that as well.
         score = max_offset / min_len
 
         # default behavior is to return boolean
