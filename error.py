@@ -1,5 +1,7 @@
+import sys
+
 
 def die(msg):
-    print "ERROR: {e}".format(e=msg)
+    print >> sys.stderr, "ERROR: {e}".format(e=msg)
     exit(1)
 
