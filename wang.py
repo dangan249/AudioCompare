@@ -16,6 +16,7 @@ UPPER_LIMIT = (BUCKET_SIZE * BUCKETS)
 CHUNK_SIZE = 1024
 
 MAX_HASH_DISTANCE = 2
+SCORE_THRESHOLD = 0
 
 
 def _bucket_winners(freq_chunks):
@@ -88,11 +89,10 @@ def _file_fingerprint(filename):
     return _hash(winners)
 
 class Wang:
-    def __init__(self, file1, file2):
-        self.filename1 = file1
-        self.filename2 = file2
+    def __init__(self, filenames):
+        self.filenames = filenames
 
-    def match(self):
+    def match(self, debug=False):
         """Takes two AbstractInputFiles as input,
         and returns a boolean as output, indicating
         if the two files match."""
@@ -101,9 +101,10 @@ class Wang:
             num_processes = multiprocessing.cpu_count()
         except NotImplementedError:
             num_processes = 2
-        pool = multiprocessing.Pool(processes=num_processes)
+        #pool = multiprocessing.Pool(processes=num_processes)
 
-        hash1, hash2 = pool.map(_file_fingerprint, [self.filename1, self.filename2])
+        #hash1, hash2 = pool.map(_file_fingerprint, self.filenames)
+        hash1, hash2 = map(_file_fingerprint, self.filenames)
 
         # the difference in chunk numbers of
         # the matches we will find.
@@ -117,20 +118,39 @@ class Wang:
                     offset = c1 - c2
                     offsets[offset] += 1
 
+        #for h1, h2 in itertools.product(hash1, hash2):
+        #    if _hash_distance(h1, h2) < MAX_HASH_DISTANCE:
+        #        for c1, c2 in itertools.product(hash1[h1], hash2[h1]):
+        #            offset = c1 - c2
+        #            offsets[offset] += 1
+
         # Let's assume that matching audio segments will only
         # generate 1 genuine "hit" for every 5 seconds of audio.
         # Whatever our shorter file is, the length of it in seconds
         # divided by 5 is the number of hits required to declare a
         # MATCH.
         #print max(offsets.viewvalues())
-        file1 = WavInputFile(self.filename1)
-        file2 = WavInputFile(self.filename2)
+        #print sorted(offsets.values())
+        file1 = WavInputFile(self.filenames[0])
+        file2 = WavInputFile(self.filenames[1])
         file1_len = file1.get_total_samples() / file1.get_sample_rate()
         file2_len = file2.get_total_samples() / file2.get_sample_rate()
-        threshold = 20 * min(file1_len, file2_len)
-        #print threshold
 
-        if len(offsets) != 0 and max(offsets.viewvalues()) >= threshold:
-            return True
+        min_len = min(file1_len, file2_len)
+
+        if len(offsets) != 0:
+            max_offset = max(offsets.viewvalues())
         else:
-            return False
+            max_offset = 0
+
+        score = max_offset / min_len
+
+        # default behavior is to return boolean
+        if not debug:
+            if score > SCORE_THRESHOLD:
+                return True
+            else:
+                return False
+
+        # sometimes for debugging we return intermediate results
+        return max_offset, min_len
