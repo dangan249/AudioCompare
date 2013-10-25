@@ -24,9 +24,10 @@ Linux machines, but it is present on some.
 
 If no errors, the output will be the string
 "MATCH" or "NO MATCH". If an error, a string
-starting with "ERROR: " will be output.
+starting with "ERROR: " will be output to standard
+error.
 
-Input files must be WAVE files. You may list
+Input files must be WAVE or MP3 files. You may list
 the same file twice.
 
 Third-Party Software Acknowledgements
@@ -37,6 +38,10 @@ We make heavy use of the libraries `numpy',
 and `matplotlib'.
 
 There are about 15 lines of code in FFT.py that
-are a modified version of some code inside
-matplotlib. This usage was approved.
+are a modified version of code inside
+matplotlib. This usage was approved. The file
+LICENSE.matplotlib license found in this directory
+is the matplotlib license, included as required
+when creating derivative works. More information
+can be found in FFT.py.
 

@@ -36,10 +36,21 @@ class FFT:
 
     def specgram(self, x, NFFT, window, noverlap):
         """Compute a spectrogram of the given audio samples.
+
         This is a stripped-down version of the code inside
         matplotlib.mlab.specgram().
+
         Code in this method is taken from the file
-        matplotlib/lib/matplotlib/mlab.py"""
+        matplotlib/lib/matplotlib/mlab.py, in the
+        method _spectral_helper().
+        It has been stripped down to avoid performing
+        unneeded checks and redundant computations, since
+        our problem is more specific than the problem
+        that _spectral_helper solves.
+
+        Original code is copyright (c) 2002-2011 John D. Hunter;
+        All Rights Reserved"""
+
         numFreqs = NFFT//2 + 1
         windowVals = window(np.ones((NFFT,), x.dtype))
 
