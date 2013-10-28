@@ -4,6 +4,7 @@ import tempfile
 import shutil
 import subprocess 
 import os
+import time
 
 from AbstractInputFile import AbstractInputFile
 
@@ -23,13 +24,7 @@ class WavInputFile(AbstractInputFile):
 
 
         self.workingdir = tempfile.mkdtemp()
-        wavfilespec = self.workingdir + "/tempwavfile.wav"
-
-        print "************DEBUG************"
-        print "\n"
-        print wavfilespec
-        print "\n"
-        print "************DEBUG************"
+        canonical_form = self.workingdir + "/tempwavfile" + str( time.time() )
 
         # Use lame to make a wav representation of the mp3 file to be analyzed
         lame = '/course/cs4500f13/bin/lame --decode %s %s' % (filename, canonical_form)

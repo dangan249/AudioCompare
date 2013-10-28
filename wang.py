@@ -70,6 +70,7 @@ def _file_fingerprint(filename):
     """Read the samples from the files, run them through FFT,
     find the loudest frequencies to use as fingerprints,
     turn those into a hash table."""
+    result = [] 
 
     # Open the file
     file = WavInputFile(filename)
@@ -78,6 +79,8 @@ def _file_fingerprint(filename):
     # into chunks by time, and convert the samples in each
     # chunk into the frequency domain.
     fft = FFT(file, CHUNK_SIZE).series()
+    
+    result.append( file.get_total_samples() / file.get_sample_rate() )
 
     file.close()
 
@@ -95,7 +98,10 @@ def _file_fingerprint(filename):
     # Chunk numbers are an approximation for the
     # timestamp in the file, and we'll use them
     # that way further on.
-    return _hash(winners)
+
+    result.append(_hash(winners) )
+
+    return result # ugly solution !!!
 
 class Wang:
     def __init__(self, filenames):
@@ -107,7 +113,12 @@ class Wang:
         if the two files match."""
 
         # Get the fingerprints from each input file.
-        hash1, hash2 = map(_file_fingerprint, self.filenames)
+        # NOTE: @Charles: what if the 2 files are the same? (same location + same filename)
+        # we can optimize further by avoid processing the same file twice
+        result1, result2 = map(_file_fingerprint, self.filenames)
+        
+        hash1 = result1[1] # avoid modifying codes below
+        hash2 = result2[1]
 
         # The difference in chunk numbers of
         # the matches we will find.
@@ -134,11 +145,8 @@ class Wang:
                     offset = c1 - c2
                     offsets[offset] += 1
 
-        # Get the length of each file in seconds
-        file1 = WavInputFile(self.filenames[0])
-        file2 = WavInputFile(self.filenames[1])
-        file1_len = file1.get_total_samples() / file1.get_sample_rate()
-        file2_len = file2.get_total_samples() / file2.get_sample_rate()
+        file1_len = result1[0]
+        file2_len = result2[1]
 
         # The length of the shorter file in important
         # to deciding whether two audio files match.
