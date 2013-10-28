@@ -1,5 +1,10 @@
 import struct
 import numpy as np
+import tempfile
+import shutil
+import subprocess 
+import os
+
 from AbstractInputFile import AbstractInputFile
 
 
@@ -15,7 +20,22 @@ class WavInputFile(AbstractInputFile):
 
         At the end of this constructor. self.wav_file will be positioned
         at the first byte of audio data in the file."""
-        self.wav_file = open(filename, "r")
+
+
+        self.workingdir = tempfile.mkdtemp()
+        wavfilespec = self.workingdir + "/tempwavfile.wav"
+
+        print "************DEBUG************"
+        print "\n"
+        print wavfilespec
+        print "\n"
+        print "************DEBUG************"
+
+        # Use lame to make a wav representation of the mp3 file to be analyzed
+        lame = '/course/cs4500f13/bin/lame --decode %s %s' % (filename, canonical_form)
+        subprocess.call([lame], shell=True, stderr=open(os.devnull, 'w'))
+
+        self.wav_file = open( canonical_form , "r")
 
         # check for RIFF in beginning of file
         if not self.__check_riff_format(self.wav_file):
@@ -127,3 +147,7 @@ class WavInputFile(AbstractInputFile):
     def close(self):
         """Close the input file."""
         self.wav_file.close()
+        #Delete temporary working directory and its contents.
+        shutil.rmtree(self.workingdir)
+    
+
