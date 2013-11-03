@@ -1,6 +1,7 @@
 import unittest
 import os
 import re
+import time
 from subprocess import *
 
 class TestCommon(unittest.TestCase):
@@ -25,7 +26,20 @@ class TestCommon(unittest.TestCase):
 
         return command
 
-    def should_produce_errors(self, files=[], name="should_not_produce_error", raw_command=False):
+    def should_finish_in_interval(self, intervalSeconds, name, otherFunc, otherFuncArgs = {}):
+        intervalMilliseconds = intervalSeconds*1000;
+
+        t1 = int(round(time.time() * 1000))
+        otherFunc(**otherFuncArgs);
+        t2 = int(round(time.time() * 1000))
+
+        actualTime = (t2 - t1)
+
+        self.assertTrue(actualTime < intervalMilliseconds, 
+            msg=name + " - should_finish_in_interval: Expected Time: < "+str(intervalMilliseconds)+"ms Actual:"+str(actualTime)+"ms");
+
+
+    def should_produce_errors(self, files=[], name="should_produce_error", raw_command=False):
         if raw_command:
             command = files
         else:
