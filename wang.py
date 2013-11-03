@@ -146,7 +146,7 @@ class Wang:
                     offsets[offset] += 1
 
         file1_len = result1[0]
-        file2_len = result2[1]
+        file2_len = result2[0]
 
         # The length of the shorter file in important
         # to deciding whether two audio files match.
