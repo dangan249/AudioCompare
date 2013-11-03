@@ -68,13 +68,33 @@ class AudioMatchBlackBox(TestCommon):
 
     def test_invalidformat_input2(self):
         self.should_produce_errors(
-            [self.testSuiteDir + "test4_orig.mp3", self.testSuiteDir + "test4_deriv1.wav"],
+            [self.testSuiteDir + "not_a_wav.wav", self.testSuiteDir + "not_a_wav2.wav"],
             "invalidformat_input2")
 
     def test_invalidformat_input3(self):
         self.should_produce_errors(
-            [self.testSuiteDir + "test4_orig.mp3", self.testSuiteDir + "test1_orig.wav"],
+            [self.testSuiteDir + "not_a_mp3.mp3", self.testSuiteDir + "test1_orig.wav"],
+            "invalidformat_input3")
+
+    def test_invalidformat_input4(self):
+        self.should_produce_errors(
+            [self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "not_a_wav.wav"],
             "invalidformat_input4")
+
+    def test_invalidformat_input5(self):
+        self.should_produce_errors(
+            [self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "not_a_mp3.mp3"],
+            "invalidformat_input5")
+
+    def test_invalidformat_input6(self):
+        self.should_produce_errors(
+            [self.testSuiteDir + "not_a_wav.wav", self.testSuiteDir + "not_a_wav.wav"],
+            "invalidformat_input6")
+
+    def test_invalidformat_input7(self):
+        self.should_produce_errors(
+            [self.testSuiteDir + "not_a_mp3.wav", self.testSuiteDir + "not_a_mp3.wav"],
+            "invalidformat_input7")
 
 #Tests: matching_input
 
@@ -112,6 +132,11 @@ class AudioMatchBlackBox(TestCommon):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test3_orig.wav", self.testSuiteDir + "test3_orig.wav"],
             "matching_input6", shouldMatch=True)
+
+    def test_matching_input7(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_deriv1.wav"],
+            "matching_input7", shouldMatch=True)
 
     #Tests: non_matching_input
     def test_non_matching_input0(self):

@@ -36,16 +36,21 @@ class TestCommon(unittest.TestCase):
         returnCode = call.returncode
         currLine = 0
 
-        self.assertNotEqual(returnCode, 0,
-                            msg=name + " - should_produce_errors: Return Code Incorrect (Expected:Not 0 Actual:" + str(
-                                returnCode) + ")")
-
         #Checking Error Message
         for line in callErr.splitlines():
             self.assertTrue(self.errorPattern.match(line),
                             msg=name + " - should_produce_errors: STDERR incorrect line (Output line " + str(
                                 currLine) + ") (Expected:" + self.errorRegexString + " Actual:" + line + ")")
             currLine += 1
+
+        #Check for extraneous output
+        self.assertEquals(len(callOut), 0, 
+                            msg=name + " - should_produce_errors: STDOUT nonempty (Output line 0) (Expected: Actual:" + callOut + ")");
+
+        #Check return code
+        self.assertNotEqual(returnCode, 0,
+                            msg=name + " - should_produce_errors: Return Code Incorrect (Expected:Not 0 Actual:" + str(
+                                returnCode) + ")")
 
     def should_not_produce_errors(self, files=[], name="should_not_produce_error", shouldMatch=True):
         if (shouldMatch):
@@ -62,13 +67,18 @@ class TestCommon(unittest.TestCase):
         returnCode = call.returncode
         currLine = 0
 
-        self.assertEquals(returnCode, 0,
-                          msg=name + " - should_not_produce_errors: Return Code Incorrect (Expected:0 Actual:" + str(
-                              returnCode) + ")")
-
         #Checking Output Message
         for line in callOut.splitlines():
             self.assertTrue(pattern.match(line),
                             msg=name + " - should_not_produce_errors: STDOUT incorrect line (Line " + str(
                                 currLine) + ") (Expected:" + reString + " Actual:" + line + ")")
             currLine += 1
+
+        #Check for extraneous output
+        self.assertEquals(len(callErr), 0, 
+                            msg=name + " - should_not_produce_errors: STDERR nonempty (Output line 0) (Expected: Actual:" + callErr + ")");
+
+        #Check return code
+        self.assertEquals(returnCode, 0,
+                          msg=name + " - should_not_produce_errors: Return Code Incorrect (Expected:0 Actual:" + str(
+                              returnCode) + ")")
