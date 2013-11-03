@@ -34,11 +34,11 @@ class WavInputFile(AbstractInputFile):
             canonical_form = self.workingdir + "/tempwavfile" + str( time.time() )
             # Use lame to make a wav representation of the mp3 file to be analyzed
             lame = '/course/cs4500f13/bin/lame --silent --decode %s %s' % (filename, canonical_form)
-            return_code = subprocess.call([lame], shell=True, stderr=open(os.devnull, 'w'))                
+            return_code = subprocess.call([lame], shell=True)                
             
             if return_code != 0 or not os.path.exists(canonical_form):
                 raise IOError("{f} 's format is not supported".format(f=filename))
-
+            
             # At this point, we should be confident that "lame" create a correct WAVE file
             self.wav_file = open( canonical_form , "r")
             
