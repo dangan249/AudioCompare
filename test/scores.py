@@ -1,5 +1,5 @@
 import os
-from wang import Wang
+from Wang import Wang
 
 
 def print_results(tests, should_match):
