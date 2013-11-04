@@ -3,6 +3,7 @@ import itertools
 import numpy as np
 from collections import defaultdict
 from WavInputFile import WavInputFile
+import multiprocessing
 
 # This algorithm is based on the Shazam algorithm,
 # described here http://www.redcode.nl/blog/2010/06/creating-shazam-in-java/
@@ -69,7 +70,9 @@ def _hash_distance(h1, h2):
 def _file_fingerprint(filename):
     """Read the samples from the files, run them through FFT,
     find the loudest frequencies to use as fingerprints,
-    turn those into a hash table."""
+    turn those into a hash table.
+    Returns a 2-tuple containing the length
+    of the file in seconds, and the hash table."""
     result = [] 
 
     # Open the file
@@ -80,7 +83,7 @@ def _file_fingerprint(filename):
     # chunk into the frequency domain.
     fft = FFT(file, CHUNK_SIZE).series()
     
-    result.append( file.get_total_samples() / file.get_sample_rate() )
+    file_len = file.get_total_samples() / file.get_sample_rate()
 
     file.close()
 
@@ -99,9 +102,9 @@ def _file_fingerprint(filename):
     # timestamp in the file, and we'll use them
     # that way further on.
 
-    result.append(_hash(winners) )
+    hash = _hash(winners)
 
-    return result # ugly solution !!!
+    return (file_len, hash)
 
 class Wang:
     def __init__(self, filenames):
@@ -112,12 +115,24 @@ class Wang:
         and returns a boolean as output, indicating
         if the two files match."""
 
+        # Try to determine how many
+        # processors are in the computer
+        # we're running on, to determine
+        # the appropriate amount of parallelism
+        # to use
+        try:
+            cpus = multiprocessing.cpu_count()
+        except NotImplementedError:
+            cpus = 1
+        # Construct a process pool to give the task of
+        # fingerprinting audio files
+        pool = multiprocessing.Pool(cpus)
         # Get the fingerprints from each input file.
-        # NOTE: @Charles: what if the 2 files are the same? (same location + same filename)
-        # we can optimize further by avoid processing the same file twice
-        result1, result2 = map(_file_fingerprint, self.filenames)
+        result1, result2 = pool.map(_file_fingerprint, self.filenames)
+        # Shut down the process pool, ending the processes in it
+        pool.close()
         
-        hash1 = result1[1] # avoid modifying codes below
+        hash1 = result1[1]
         hash2 = result2[1]
 
         # The difference in chunk numbers of
