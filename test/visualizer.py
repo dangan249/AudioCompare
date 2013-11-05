@@ -1,5 +1,5 @@
 import sys
-from WavInputFile import WavInputFile
+from InputFile import InputFile
 from Tkinter import *
 from Wang import *
 import Wang
@@ -26,7 +26,7 @@ def visualizer():
     will use in our hashing algorithm.
     """
     try:
-        input_file = WavInputFile(sys.argv[1])
+        input_file = InputFile(sys.argv[1])
     except IOError, e:
         print ("ERROR: {e}".format(e=e))
         return

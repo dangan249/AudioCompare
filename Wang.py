@@ -2,7 +2,7 @@ from FFT import FFT
 import itertools
 import numpy as np
 from collections import defaultdict
-from WavInputFile import WavInputFile
+from InputFile import InputFile
 import multiprocessing
 
 # This algorithm is based on the Shazam algorithm,
@@ -73,10 +73,9 @@ def _file_fingerprint(filename):
     turn those into a hash table.
     Returns a 2-tuple containing the length
     of the file in seconds, and the hash table."""
-    result = [] 
 
     # Open the file
-    file = WavInputFile(filename)
+    file = InputFile(filename)
 
     # Read samples from the input files, divide them
     # into chunks by time, and convert the samples in each
