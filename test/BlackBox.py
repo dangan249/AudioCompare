@@ -20,6 +20,65 @@ class AudioMatchBlackBox(TestCommon):
     def test_empty_args3(self):
         self.should_produce_errors([self.runCommand, " ", " "], "empty_args3", raw_command=True)
 
+
+    #tests: invalidcommand_input
+    #Note: If "Valid Command Line Input changes, we need to change these"
+
+    def test_invalidcommand_input0(self):
+        self.should_produce_errors(
+            [self.runCommand, self.testSuiteDir + "not_a_wav.wav", self.testSuiteDir + "not_a_wav2.wav"],
+            "invalidformat_input0", raw_command=True)
+
+    def test_invalidcommand_input01(self):
+        self.should_produce_errors(
+            [self.runCommand, self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_orig.wav"],
+            "invalidcommand_input0", raw_command=True)
+
+    def test_invalidcommand_input01(self):
+        self.should_produce_errors(
+            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_orig.wav"],
+            "invalidcommand_input01", raw_command=True)
+
+    def test_invalidcommand_input02(self):
+        self.should_produce_errors(
+            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", "-g", self.testSuiteDir + "test1_orig.wav"],
+            "invalidcommand_input02", raw_command=True)
+
+    def test_invalidcommand_input03(self):
+        self.should_produce_errors(
+            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", "-f", self.testSuiteDir + "test1_orig.wav", "-t", "afsdfsdfgzgsdagsdg"],
+            "invalidcommand_input03", raw_command=True)
+
+    def test_invalidcommand_input04(self):
+        self.should_produce_errors(
+            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", "-f", self.testSuiteDir + "test1_orig.wav", "-qdqwddsvFET54TGREGEGVFDVV", "afsdfsdfgzgsdagsdg"],
+            "invalidcommand_input04", raw_command=True)
+
+    def test_invalidcommand_input05(self):
+        self.should_produce_errors(
+            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", "-f", self.testSuiteDir + "test1_orig.wav", "FDSAGDFGADFGDVADFBADB", "afsdfsdfgzgsdagsdg"],
+            "invalidcommand_input05", raw_command=True)
+
+    def test_invalidcommand_input06(self):
+        self.should_produce_errors(
+            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav"],
+            "invalidcommand_input06", raw_command=True)
+
+    def test_invalidcommand_input07(self):
+        self.should_produce_errors(
+            [self.runCommand, "-f", "-f"],
+            "invalidcommand_input07", raw_command=True)
+
+    def test_invalidcommand_input08(self):
+        self.should_produce_errors(
+            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", "-f", self.testSuiteDir + "test1_orig.wav", "-qdqwddsvFET54TGREGEGVFDVV"],
+            "invalidcommand_input08", raw_command=True)
+
+    def test_invalidcommand_input09(self):
+        self.should_produce_errors(
+            [self.runCommand, "-qdqwddsvFET54TGREGEGVFDVV"],
+            "invalidcommand_input09", raw_command=True)
+
     #tests: nonexistant_inputs
     def test_nonexistant_input0(self):
         self.should_produce_errors([self.testSuiteDir + "nonexistant.wav"], "nonexistant_input0")
@@ -86,65 +145,6 @@ class AudioMatchBlackBox(TestCommon):
             [self.testSuiteDir + "not_a_mp3.wav", self.testSuiteDir + "not_a_mp3.wav"],
             "invalidformat_input5")
 
-
-    #tests: invalidcommand_input
-    #Note: If "Valid Command Line Input changes, we need to change these"
-
-    def test_invalidcommand_input0(self):
-        self.should_produce_errors(
-            [self.runCommand, self.testSuiteDir + "not_a_wav.wav", self.testSuiteDir + "not_a_wav2.wav"],
-            "invalidformat_input0", raw_command=True)
-
-    def test_invalidcommand_input01(self):
-        self.should_produce_errors(
-            [self.runCommand, self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_orig.wav"],
-            "invalidcommand_input0", raw_command=True)
-
-    def test_invalidcommand_input01(self):
-        self.should_produce_errors(
-            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_orig.wav"],
-            "invalidcommand_input01", raw_command=True)
-
-    def test_invalidcommand_input02(self):
-        self.should_produce_errors(
-            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", "-g", self.testSuiteDir + "test1_orig.wav"],
-            "invalidcommand_input02", raw_command=True)
-
-    def test_invalidcommand_input03(self):
-        self.should_produce_errors(
-            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", "-f", self.testSuiteDir + "test1_orig.wav", "-t", "afsdfsdfgzgsdagsdg"],
-            "invalidcommand_input03", raw_command=True)
-
-    def test_invalidcommand_input04(self):
-        self.should_produce_errors(
-            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", "-f", self.testSuiteDir + "test1_orig.wav", "-qdqwddsvFET54TGREGEGVFDVV", "afsdfsdfgzgsdagsdg"],
-            "invalidcommand_input04", raw_command=True)
-
-    def test_invalidcommand_input05(self):
-        self.should_produce_errors(
-            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", "-f", self.testSuiteDir + "test1_orig.wav", "FDSAGDFGADFGDVADFBADB", "afsdfsdfgzgsdagsdg"],
-            "invalidcommand_input05", raw_command=True)
-
-    def test_invalidcommand_input06(self):
-        self.should_produce_errors(
-            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav"],
-            "invalidcommand_input06", raw_command=True)
-
-    def test_invalidcommand_input07(self):
-        self.should_produce_errors(
-            [self.runCommand, "-f", "-f"],
-            "invalidcommand_input07", raw_command=True)
-
-    def test_invalidcommand_input08(self):
-        self.should_produce_errors(
-            [self.runCommand, "-f", self.testSuiteDir + "test1_orig.wav", "-f", self.testSuiteDir + "test1_orig.wav", "-qdqwddsvFET54TGREGEGVFDVV"],
-            "invalidcommand_input08", raw_command=True)
-
-    def test_invalidcommand_input09(self):
-        self.should_produce_errors(
-            [self.runCommand, "-qdqwddsvFET54TGREGEGVFDVV"],
-            "invalidcommand_input09", raw_command=True)
-
     #Tests: matching_input
     #Note: Not prepended with "test_" due to later efficiency testing
 
@@ -208,6 +208,91 @@ class AudioMatchBlackBox(TestCommon):
             [self.testSuiteDir + "test4_deriv1.wav", self.testSuiteDir + "test4_orig.mp3"],
             "matching_input11", shouldMatch=True)
 
+    def matching_input12(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem.mp3.mp3", self.testSuiteDir + "eminem.mp3.mp3"],
+            "matching_input12", shouldMatch=True)
+
+    def matching_input13(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem.mp3.mp3", self.testSuiteDir + "eminem.wav"],
+            "matching_input13", shouldMatch=True)
+
+    def matching_input14(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem.mp3.mp3", self.testSuiteDir + "eminem.wav.mp3"],
+            "matching_input14", shouldMatch=True)
+
+    def matching_input15(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem5-10_22k.mp3", self.testSuiteDir + "eminem.wav.mp3"],
+            "matching_input15", shouldMatch=True)
+
+    def matching_input16(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem.wav.mp3", self.testSuiteDir + "eminem5-10_22k.mp3"],
+            "matching_input16", shouldMatch=True)
+
+    def matching_input17(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem.wav.mp3", self.testSuiteDir + "eminem5-10_22k.wav"],
+            "matching_input17", shouldMatch=True)
+
+    def matching_input18(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem5-10_22k.mp3", self.testSuiteDir + "eminem5-10_22k.wav"],
+            "matching_input18", shouldMatch=True)
+
+    def matching_input19(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem5-10_22k.mp3", self.testSuiteDir + "eminem5-10.wav"],
+            "matching_input19", shouldMatch=True)
+
+    def matching_input20(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem_22k.mp3", self.testSuiteDir + "eminem5-10.wav"],
+            "matching_input20", shouldMatch=True)
+
+    def matching_input21(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem5-10.wav", self.testSuiteDir + "eminem_22k.mp3"],
+            "matching_input21", shouldMatch=True)
+
+    def matching_input22(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem_22k.wav", self.testSuiteDir + "eminem_22k.mp3"],
+            "matching_input22", shouldMatch=True)
+
+    def matching_input23(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem_22k.mp3", self.testSuiteDir + "eminem_22k.wav"],
+            "matching_input23", shouldMatch=True)
+
+    def matching_input24(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem_22k.wav"],
+            "matching_input24", shouldMatch=True)
+
+    def matching_input25(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem_22k.mp3"],
+            "matching_input25", shouldMatch=True)
+
+    def matching_input26(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem5-10_22k.wav"],
+            "matching_input26", shouldMatch=True)
+
+    def matching_input27(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem5-10_22k.mp3"],
+            "matching_input27", shouldMatch=True)
+
+    def matching_input28(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem5-10.wav"],
+            "matching_input28", shouldMatch=True)
+
     #Tests: non_matching_input
     #Note: Not prepended with "test_" due to later efficiency testing
 
@@ -259,65 +344,113 @@ class AudioMatchBlackBox(TestCommon):
 
     #Tests: efficiency_expectations
 
-    def test_efficiency_expectations00(self):
-        self.should_finish_in_interval(10, "efficiency_expectations00", self.matching_input0)
+    def test_efficiency_expectations_matching00(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching00", self.matching_input0)
 
-    def test_efficiency_expectations01(self):
-        self.should_finish_in_interval(10, "efficiency_expectations01", self.matching_input1)
+    def test_efficiency_expectations_matching01(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching01", self.matching_input1)
 
-    def test_efficiency_expectations02(self):
-        self.should_finish_in_interval(10, "efficiency_expectations02", self.matching_input2)
+    def test_efficiency_expectations_matching02(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching02", self.matching_input2)
 
-    def test_efficiency_expectations03(self):
-        self.should_finish_in_interval(10, "efficiency_expectations03", self.matching_input3)
+    def test_efficiency_expectations_matching03(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching03", self.matching_input3)
 
-    def test_efficiency_expectations04(self):
-        self.should_finish_in_interval(10, "efficiency_expectations04", self.matching_input4)
+    def test_efficiency_expectations_matching04(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching04", self.matching_input4)
 
-    def test_efficiency_expectations05(self):
-        self.should_finish_in_interval(10, "efficiency_expectations05", self.matching_input5)
+    def test_efficiency_expectations_matching05(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching05", self.matching_input5)
 
-    def test_efficiency_expectations06(self):
-        self.should_finish_in_interval(10, "efficiency_expectations06", self.matching_input6)
+    def test_efficiency_expectations_matching06(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching06", self.matching_input6)
 
-    def test_efficiency_expectations07(self):
-        self.should_finish_in_interval(10, "efficiency_expectations07", self.matching_input7)
+    def test_efficiency_expectations_matching07(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching07", self.matching_input7)
 
-    def test_efficiency_expectations08(self):
-        self.should_finish_in_interval(10, "efficiency_expectations08", self.matching_input8)
+    def test_efficiency_expectations_matching08(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching08", self.matching_input8)
 
-    def test_efficiency_expectations09(self):
-        self.should_finish_in_interval(10, "efficiency_expectations09", self.matching_input9)
+    def test_efficiency_expectations_matching09(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching09", self.matching_input9)
 
-    def test_efficiency_expectations10(self):
-        self.should_finish_in_interval(10, "efficiency_expectations10", self.matching_input10)
+    def test_efficiency_expectations_matching10(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching10", self.matching_input10)
 
-    def test_efficiency_expectations11(self):
-        self.should_finish_in_interval(10, "efficiency_expectations11", self.matching_input11)
+    def test_efficiency_expectations_matching11(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching11", self.matching_input11)
 
-    def test_efficiency_expectations12(self):
-        self.should_finish_in_interval(10, "efficiency_expectations12", self.non_matching_input0)
+    def test_efficiency_expectations_matching12(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching12", self.matching_input12)
 
-    def test_efficiency_expectations13(self):
-        self.should_finish_in_interval(10, "efficiency_expectations13", self.non_matching_input1)
+    def test_efficiency_expectations_matching13(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching13", self.matching_input13)
 
-    def test_efficiency_expectations14(self):
-        self.should_finish_in_interval(10, "efficiency_expectations14", self.non_matching_input2)
+    def test_efficiency_expectations_matching14(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching14", self.matching_input14)
 
-    def test_efficiency_expectations15(self):
-        self.should_finish_in_interval(10, "efficiency_expectations15", self.non_matching_input3)
+    def test_efficiency_expectations_matching15(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching15", self.matching_input15)
 
-    def test_efficiency_expectations16(self):
-        self.should_finish_in_interval(10, "efficiency_expectations16", self.non_matching_input4)
+    def test_efficiency_expectations_matching16(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching16", self.matching_input16)
 
-    def test_efficiency_expectations17(self):
-        self.should_finish_in_interval(10, "efficiency_expectations17", self.non_matching_input5)
+    def test_efficiency_expectations_matching17(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching17", self.matching_input17)
 
-    def test_efficiency_expectations18(self):
-        self.should_finish_in_interval(10, "efficiency_expectations18", self.non_matching_input6)
+    def test_efficiency_expectations_matching18(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching18", self.matching_input18)
 
-    def test_efficiency_expectations19(self):
-        self.should_finish_in_interval(10, "efficiency_expectations19", self.non_matching_input7)
+    def test_efficiency_expectations_matching19(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching19", self.matching_input19)
+
+    def test_efficiency_expectations_matching20(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching20", self.matching_input20)
+
+    def test_efficiency_expectations_matching21(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching21", self.matching_input21)
+
+    def test_efficiency_expectations_matching22(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching22", self.matching_input22)
+
+    def test_efficiency_expectations_matching23(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching23", self.matching_input23)
+
+    def test_efficiency_expectations_matching24(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching24", self.matching_input24)
+
+    def test_efficiency_expectations_matching25(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching25", self.matching_input25)
+
+    def test_efficiency_expectations_matching26(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching26", self.matching_input26)
+
+    def test_efficiency_expectations_matching27(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching27", self.matching_input27)
+
+    def test_efficiency_expectations_non_matching01(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_non_matching01", self.non_matching_input0)
+
+    def test_efficiency_expectations_non_matching02(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_non_matching02", self.non_matching_input1)
+
+    def test_efficiency_expectations_non_matching03(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_non_matching03", self.non_matching_input2)
+
+    def test_efficiency_expectations_non_matching04(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_non_matching04", self.non_matching_input3)
+
+    def test_efficiency_expectations_non_matching05(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_non_matching05", self.non_matching_input4)
+
+    def test_efficiency_expectations_non_matching06(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_non_matching06", self.non_matching_input5)
+
+    def test_efficiency_expectations_non_matching07(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_non_matching07", self.non_matching_input6)
+
+    def test_efficiency_expectations_non_matching08(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_non_matching08", self.non_matching_input7)
 
 
 if __name__ == "__main__":
