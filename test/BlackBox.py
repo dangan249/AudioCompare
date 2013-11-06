@@ -2,7 +2,7 @@ import unittest
 import os
 import re
 from subprocess import *
-from test_common import *
+from TestCommon import *
 
 
 class AudioMatchBlackBox(TestCommon):

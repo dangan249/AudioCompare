@@ -6,15 +6,13 @@ import subprocess
 import os
 import time
 
-from AbstractInputFile import AbstractInputFile
 
-
-class WavInputFile(AbstractInputFile):
+class InputFile:
 
     def __init__(self, filename):
         """Open an Audio file with the given file path.
         Supported formats: WAVE, MP3.
-        All MP3 files will be converted to WAVE using the LAME programe
+        All MP3 files will be converted to WAVE using the LAME program
 
         This document http://www-mmsp.ece.mcgill.ca/documents/AudioFormats/WAVE/WAVE.html
         was used as a spec for files. We implement a limited subset
@@ -33,8 +31,8 @@ class WavInputFile(AbstractInputFile):
             self.wav_file.close()
             canonical_form = self.workingdir + "/tempwavfile" + str( time.time() )
             # Use lame to make a wav representation of the mp3 file to be analyzed
-            lame = '/course/cs4500f13/bin/lame --silent --decode %s %s' % (filename, canonical_form)
-            return_code = subprocess.call([lame], shell=True)                
+            lame = ['/course/cs4500f13/bin/lame', '--silent', '--decode', filename, canonical_form]
+            return_code = subprocess.call(lame, shell=False)
             
             if return_code != 0 or not os.path.exists(canonical_form):
                 raise IOError("{f} 's format is not supported".format(f=filename))
@@ -44,10 +42,10 @@ class WavInputFile(AbstractInputFile):
             
        # At this point, audio file should have the canonical form(WAVE)    
         self.wav_file.seek(4,0)
-        riff_size = WavInputFile.__read_size(self.wav_file)
+        riff_size = InputFile.__read_size(self.wav_file)
 
         self.wav_file.seek(16,0)
-        fmt_chunk_size = WavInputFile.__read_size(self.wav_file)
+        fmt_chunk_size = InputFile.__read_size(self.wav_file)
         fmt_data = self.wav_file.read(fmt_chunk_size)
         
         # get some info from the file header
@@ -56,19 +54,19 @@ class WavInputFile(AbstractInputFile):
         self.block_align = self.__read_ushort(fmt_data[12:14])
 
         self.wav_file.seek( 40 , 0 )
-        self.data_chunk_size = WavInputFile.__read_size(self.wav_file)
+        self.data_chunk_size = InputFile.__read_size(self.wav_file)
         self.total_samples = (self.data_chunk_size / self.block_align)
 
     @staticmethod
     def __is_wave_file(file):
-        if( WavInputFile.__check_riff_format(file) 
-            and WavInputFile.__check_wave_id(file)
-            and WavInputFile.__check_fmt(file) ):            
+        if( InputFile.__check_riff_format(file)
+            and InputFile.__check_wave_id(file)
+            and InputFile.__check_fmt(file) ):
             file.seek( 20 )
             data = file.read( 2 ) 
             file.seek( 0 )
-            return ( WavInputFile.__check_fmt_valid(data) 
-                     and WavInputFile.__check_data(file) )
+            return ( InputFile.__check_fmt_valid(data)
+                     and InputFile.__check_data(file) )
         else:
             return False
 
@@ -101,13 +99,13 @@ class WavInputFile(AbstractInputFile):
 
     @staticmethod
     def __check_fmt_valid(data):
-        format_tag = WavInputFile.__read_ushort(data[0:2])
+        format_tag = InputFile.__read_ushort(data[0:2])
         return format_tag == 1
 
     @staticmethod
     def __read_size(file):
         """Read a 4 byte uint from the file."""
-        return WavInputFile.__read_uint(file.read(4))
+        return InputFile.__read_uint(file.read(4))
 
     @staticmethod
     def __read_ushort(data):

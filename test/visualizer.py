@@ -1,8 +1,8 @@
 import sys
-from WavInputFile import WavInputFile
+from InputFile import InputFile
 from Tkinter import *
-from wang import *
-import wang
+from Wang import *
+import Wang
 from FFT import FFT
 import numpy
 
@@ -26,7 +26,7 @@ def visualizer():
     will use in our hashing algorithm.
     """
     try:
-        input_file = WavInputFile(sys.argv[1])
+        input_file = InputFile(sys.argv[1])
     except IOError, e:
         print ("ERROR: {e}".format(e=e))
         return
@@ -35,7 +35,7 @@ def visualizer():
 
     norm = LogNorm(0.000000001, numpy.amax(freq_chunks))
 
-    winners = wang._bucket_winners(freq_chunks)
+    winners = Wang._bucket_winners(freq_chunks)
 
     # initialize an empty window
     master = Tk()
