@@ -10,7 +10,8 @@ from matplotlib.colors import LogNorm
 import matplotlib.cm
 
 
-CHUNK_SIZE = 1024
+NORMAL_CHUNK_SIZE = 1024
+NORMAL_SAMPLE_RATE = 44100.0
 
 def apply_bgcolor(a, r, g, b):
     bg_r = 0.0
@@ -31,7 +32,9 @@ def visualizer():
         print ("ERROR: {e}".format(e=e))
         return
 
-    freq_chunks = FFT(input_file, CHUNK_SIZE).series()
+    sample_rate_adjust_factor = int(NORMAL_SAMPLE_RATE / input_file.get_sample_rate())
+
+    freq_chunks = FFT(input_file, CHUNK_SIZE/sample_rate_adjust_factor).series()
 
     norm = LogNorm(0.000000001, numpy.amax(freq_chunks))
 

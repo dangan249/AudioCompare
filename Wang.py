@@ -13,7 +13,8 @@ BUCKET_SIZE = 20
 BUCKETS = 4
 UPPER_LIMIT = (BUCKET_SIZE * BUCKETS)
 
-CHUNK_SIZE = 1024
+NORMAL_CHUNK_SIZE = 1024
+NORMAL_SAMPLE_RATE = 44100.0
 
 MAX_HASH_DISTANCE = 2
 SCORE_THRESHOLD = 0
@@ -54,19 +55,6 @@ def _hash(max_index):
     return hashes
 
 
-def _hash_distance(h1, h2):
-    """The total difference between
-    each number in two equal-length tuples."""
-    if len(h1) != len(h2):
-        raise ValueError("Arguments are sequences of unequal length")
-
-    dist = 0
-    for i in range(len(h1)):
-        dist += abs(h1[i] - h2[i])
-
-    return dist
-
-
 def _file_fingerprint(filename):
     """Read the samples from the files, run them through FFT,
     find the loudest frequencies to use as fingerprints,
@@ -80,7 +68,13 @@ def _file_fingerprint(filename):
     # Read samples from the input files, divide them
     # into chunks by time, and convert the samples in each
     # chunk into the frequency domain.
-    fft = FFT(file, CHUNK_SIZE).series()
+    # The chunk size is dependent on the sample rate of the
+    # file. It is important that each chunk represent the
+    # same amount of time, regardless of the sample
+    # rate of the file.
+    chunk_size_adjust_factor = int(NORMAL_SAMPLE_RATE / file.get_sample_rate())
+    fft = FFT(file, NORMAL_CHUNK_SIZE / chunk_size_adjust_factor)
+    series = fft.series()
     
     file_len = file.get_total_samples() / file.get_sample_rate()
 
@@ -93,7 +87,7 @@ def _file_fingerprint(filename):
     # Each chunk will be reduced to a tuple of
     # 4 numbers which are 4 of the loudest frequencies
     # in that chunk.
-    winners = _bucket_winners(fft)
+    winners = _bucket_winners(series)
 
     # Generate a hash mapping the fingerprints
     # to the chunk numbers that they occurred in.

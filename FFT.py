@@ -5,7 +5,7 @@ import time
 class FFT:
     """A mechanism for identifying the dominant frequencies
     in time ranges in an audio file."""
-    def __init__(self, input_file, chunk_size=1024):
+    def __init__(self, input_file, chunk_size=1024, overlap_ratio=2):
         """Set up an file for FFT processing.
         The constructor doesn't actually do the processing.
         @param input_file The file we'll read audio data from. The should
@@ -13,6 +13,7 @@ class FFT:
         @param chunk_size The size of the chunks to put through FFT."""
         self.input_file = input_file
         self.chunk_size = chunk_size
+        self.overlap_ratio = overlap_ratio
 
     def series(self, chunks=-1):
         """Return the FFTs of samples of audio chunks. The number of FFT bins will be almost
@@ -30,7 +31,9 @@ class FFT:
         samples = self.input_file.get_audio_samples(chunks * self.chunk_size)
         # mix those samples down into one channel
         samples = samples.mean(axis=0)
-        result = self.specgram(samples, NFFT=self.chunk_size, window=FFT.__window_hanning, noverlap=self.chunk_size/2)
+        result = self.specgram(samples, NFFT=self.chunk_size,
+                               window=FFT.__window_hanning,
+                               noverlap=self.chunk_size/self.overlap_ratio)
         result = result.transpose()
         return result
 

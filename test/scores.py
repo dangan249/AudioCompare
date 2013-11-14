@@ -10,13 +10,14 @@ def print_results(tests, should_match):
             msg = "SHOULD NOT MATCH:"
         else:
             msg = "SHOULD MATCH:    "
-        print "{m} score:{s}\tlength:{l}\tratio:{r}\t{f}".format(m=msg, s=score, l=length, r=score/length, f=map(os.path.basename, test))
+        print "{m} score:{s}\tlength:{l}\tratio:{r} \t{f}".format(m=msg, s=score, l=length, r=score/length, f=map(os.path.basename, test))
 
 def scores():
     testSuiteDir = os.path.dirname(os.path.abspath(__file__)) + "/../test_data/"
     profTestSuiteDir = os.path.dirname(os.path.abspath(__file__)) + "/../test_data/A6/"
 
     matching_tests = [
+         (testSuiteDir + "eminem5-10.wav", testSuiteDir + "eminem5-10_22k.wav"),
          (testSuiteDir + "test1_orig.wav", testSuiteDir + "test1_orig.wav"),
          (testSuiteDir + "test1_deriv2.wav", testSuiteDir + "test1_deriv1.wav"),
          (testSuiteDir + "test1_orig.wav", testSuiteDir + "test1_deriv2.wav"),
