@@ -72,8 +72,8 @@ def _file_fingerprint(filename):
     # file. It is important that each chunk represent the
     # same amount of time, regardless of the sample
     # rate of the file.
-    chunk_size_adjust_factor = int(NORMAL_SAMPLE_RATE / file.get_sample_rate())
-    fft = FFT(file, NORMAL_CHUNK_SIZE / chunk_size_adjust_factor)
+    chunk_size_adjust_factor = (NORMAL_SAMPLE_RATE / file.get_sample_rate())
+    fft = FFT(file, int(NORMAL_CHUNK_SIZE / chunk_size_adjust_factor))
     series = fft.series()
     
     file_len = file.get_total_samples() / file.get_sample_rate()
