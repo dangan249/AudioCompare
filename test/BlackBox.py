@@ -293,6 +293,21 @@ class AudioMatchBlackBox(TestCommon):
             [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem5-10.wav"],
             "matching_input28", shouldMatch=True)
 
+    def matching_input29(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "actually_an_mpthree.wav", self.testSuiteDir + "actually_an_mpthree.mp3"],
+            "matching_input29", shouldMatch=True)
+
+    def matching_input30(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "actually_an_mpthree.mp3", self.testSuiteDir + "actually_an_mpthree.wav"],
+            "matching_input30", shouldMatch=True)
+
+    def matching_input31(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "actually_an_mpthree.wav", self.testSuiteDir + "actually_an_mpthree.wav"],
+            "matching_input31", shouldMatch=True)
+
     #Tests: non_matching_input
     #Note: Not prepended with "test_" due to later efficiency testing
 
@@ -427,6 +442,18 @@ class AudioMatchBlackBox(TestCommon):
 
     def test_efficiency_expectations_matching27(self):
         self.should_finish_in_interval(10, "efficiency_expectations_matching27", self.matching_input27)
+
+    def test_efficiency_expectations_matching28(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching28", self.matching_input28)
+
+    def test_efficiency_expectations_matching29(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching29", self.matching_input29)
+
+    def test_efficiency_expectations_matching30(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching30", self.matching_input30)
+
+    def test_efficiency_expectations_matching31(self):
+        self.should_finish_in_interval(10, "efficiency_expectations_matching31", self.matching_input31)
 
     def test_efficiency_expectations_non_matching01(self):
         self.should_finish_in_interval(10, "efficiency_expectations_non_matching01", self.non_matching_input0)
