@@ -12,10 +12,10 @@ class TestCommon(unittest.TestCase):
     errorRegexString = '^ERROR(.*)$'
     errorPattern = re.compile(errorRegexString)
 
-    matchRegexString = '^MATCH$'
+    matchRegexString = '^MATCH(.*)$'
     matchPattern = re.compile(matchRegexString)
 
-    noMatchRegexString = '^NO MATCH$'
+    noMatchRegexString = '^NO MATCH(.*)$'
     noMatchPattern = re.compile(noMatchRegexString)
 
     def create_command(self, files):

@@ -18,6 +18,10 @@ def scores():
 
     matching_tests = [
          (testSuiteDir + "eminem5-10.wav", testSuiteDir + "eminem5-10_22k.wav"),
+         (testSuiteDir + "eminem5-10.wav", testSuiteDir + "eminem5-10.wav"),
+         (testSuiteDir + "eminem5-10.wav", testSuiteDir + "eminem5-10_22k.mp3"),
+         (testSuiteDir + "eminem.mp3", testSuiteDir + "eminem5-10_22k.mp3"),
+         (testSuiteDir + "eminem.mp3", testSuiteDir + "eminem5-10_22k.wav"),
          (testSuiteDir + "test1_orig.wav", testSuiteDir + "test1_orig.wav"),
          (testSuiteDir + "test1_deriv2.wav", testSuiteDir + "test1_deriv1.wav"),
          (testSuiteDir + "test1_orig.wav", testSuiteDir + "test1_deriv2.wav"),

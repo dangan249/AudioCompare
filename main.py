@@ -16,6 +16,11 @@ def audio_matcher():
                         default=list(),
                         help="A file to examine. "
                         "Must provide two instance of this argument.")
+    parser.add_argument("-d", action="append",
+                        required=False, dest="dirs",
+                        default=list(),
+                        help="A directory of files to examine. "
+                        "Must provide two instance of this argument.")
     parser.add_argument("--test",
                   action="store_true", dest="test", default=False,
                   help="Run in test mode (shows stacktraces on error)")
@@ -23,21 +28,22 @@ def audio_matcher():
     try:
         args = parser.parse_args()
     except Exception, e:
-        if args.test:
+        if "--test" in sys.argv:
             raise
         die(e.message)
+        return
 
-    if len(args.files) != 2:
-        die("Must provide exactly two input files.")
+    search_paths = args.dirs + args.files
+
+    if len(search_paths) != 2:
+        die("Must provide exactly two input files or directories.")
 
     # Use our matching system
     try:
-        matcher = Wang.Wang(args.files)
-        if matcher.match():
-            print "MATCH"
-        else:
-            print "NO MATCH"
-    except IOError, e:
+        matcher = Wang.Wang(search_paths[0], search_paths[1])
+        for match in matcher.match(verbose=args.test):
+            print match
+    except Exception, e:
         if args.test:
             raise
         die(e)
