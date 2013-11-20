@@ -71,7 +71,7 @@ def _bucket_winners(freq_chunks):
     chunks = len(freq_chunks)
     max_index = np.zeros((chunks, BUCKETS), dtype=np.int8)
     # Examine each chunk independently
-    for chunk in range(chunks):
+    for chunk in xrange(chunks):
         for bucket in range(BUCKETS):
             start_index = bucket * BUCKET_SIZE
             end_index = (bucket + 1) * BUCKET_SIZE
@@ -84,11 +84,14 @@ def _bucket_winners(freq_chunks):
 
 
 def _to_fingerprints(winners_array):
+    """Convert a 2-dimensional array to a 1-dimensional
+    array by ORing the bits of each "row" together."""
     result = np.zeros(len(winners_array), dtype=np.int32)
+    shift_amounts = [i*BITS_PER_NUMBER for i in range(winners_array.shape[1])]
     for winners_index in range(len(winners_array)):
         winners = winners_array[winners_index]
-        shifted_winners = [winners[i] << (i*BITS_PER_NUMBER) for i in range(len((winners)))]
-        combined = sum(shifted_winners)
+        shifted_winners = [np.left_shift(winners[i], shift_amounts[i]) for i in range(len((winners)))]
+        combined = np.sum(shifted_winners)
         result[winners_index] = combined
 
     return result
@@ -189,7 +192,7 @@ class Wang:
         to ChunkInfo objects."""
         master = defaultdict(list)
         for f in files:
-            for chunk in range(len(f.fingerprints)):
+            for chunk in xrange(len(f.fingerprints)):
                 hash = f.fingerprints[chunk]
                 master[hash].append(ChunkInfo(chunk, f.filename))
 
@@ -231,7 +234,7 @@ class Wang:
             file_match_offsets[f] = defaultdict(lambda: 0)
 
         # For each chunk in the query file
-        for query_chunk_index in range(len(file.fingerprints)):
+        for query_chunk_index in xrange(len(file.fingerprints)):
             # See if that chunk's fingerprint is in our master hash
             chunk_fingerprint = file.fingerprints[query_chunk_index]
             if chunk_fingerprint in master_hash:

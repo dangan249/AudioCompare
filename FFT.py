@@ -63,7 +63,7 @@ class FFT:
         Pxx = np.zeros((numFreqs, n), np.complex_)
 
         # do the ffts of the slices
-        for i in range(n):
+        for i in xrange(n):
             thisX = x[ind[i]:ind[i]+NFFT]
             thisX = windowVals * thisX
             fx = np.fft.fft(thisX, n=NFFT)
@@ -86,7 +86,7 @@ class FFT:
         """Mix an arbitrary number of channels into one."""
         result = np.zeros(samples.shape[1])
         channels = len(samples)
-        for i in range(len(result)):
+        for i in xrange(len(result)):
             sum = 0
             for j in range(channels):
                 sum += samples[j][i]
