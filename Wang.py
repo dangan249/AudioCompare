@@ -1,4 +1,5 @@
 import math
+import time
 from FFT import FFT
 import numpy as np
 from collections import defaultdict
@@ -62,39 +63,28 @@ class MatchResult:
         match_string = "MATCH" if self.score > SCORE_THRESHOLD else "NO MATCH"
         return "{m}: {f1} {f2} ({s})".format(m=match_string, f1=short_file1, f2=short_file2, s=self.score)
 
-def _bucket_winners(freq_chunks):
+def _to_fingerprints(freq_chunks):
     """Examine the results of running chunks of audio
     samples through FFT. For each chunk, look at the frequencies
     that are loudest in each "bucket." A bucket is a series of
-    frequencies. Return the index of the loudest frequency in each
-    bucket in each chunk."""
+    frequencies. Return the indices of the loudest frequency in each
+    bucket in each chunk. These indices will be encoded into
+    a single number per chunk."""
     chunks = len(freq_chunks)
-    max_index = np.zeros((chunks, BUCKETS), dtype=np.int8)
+    fingerprints = np.zeros(chunks, dtype=np.uint32)
     # Examine each chunk independently
     for chunk in xrange(chunks):
+        fingerprint = 0
         for bucket in range(BUCKETS):
             start_index = bucket * BUCKET_SIZE
             end_index = (bucket + 1) * BUCKET_SIZE
             bucket_vals = freq_chunks[chunk][start_index:end_index]
-            raw_max_index = bucket_vals.argmax()
-            max_index[chunk][bucket] = raw_max_index
+            max_index = bucket_vals.argmax()
+            fingerprint += (max_index << (bucket * BITS_PER_NUMBER))
+        fingerprints[chunk] = fingerprint
 
     # return the indexes of the loudest frequencies
-    return max_index
-
-
-def _to_fingerprints(winners_array):
-    """Convert a 2-dimensional array to a 1-dimensional
-    array by ORing the bits of each "row" together."""
-    result = np.zeros(len(winners_array), dtype=np.int32)
-    shift_amounts = [i*BITS_PER_NUMBER for i in range(winners_array.shape[1])]
-    for winners_index in range(len(winners_array)):
-        winners = winners_array[winners_index]
-        shifted_winners = [np.left_shift(winners[i], shift_amounts[i]) for i in range(len((winners)))]
-        combined = np.sum(shifted_winners)
-        result[winners_index] = combined
-
-    return result
+    return fingerprints
 
 
 def _file_fingerprint(filename):
@@ -129,18 +119,23 @@ def _file_fingerprint(filename):
     # Each chunk will be reduced to a tuple of
     # 4 numbers which are 4 of the loudest frequencies
     # in that chunk.
-    winners = _bucket_winners(series)
-
     # Convert each tuple in winners to a single
     # number. This number is unique for each possible
     # tuple. This hopefully makes things more
     # efficient.
-    fingerprints = _to_fingerprints(winners)
+    fingerprints = _to_fingerprints(series)
 
     return FileResult(fingerprints, file_len, filename)
 
+
 class Wang:
+    """Create an instance of this class to use our matching system."""
+
     def __init__(self, dir1, dir2):
+        """The two arguments should be strings that are
+        file or directory paths. For files, we will simply
+        examine these files. For directories, we will scan
+        them for files."""
         self.dir1 = dir1
         self.dir2 = dir2
 
@@ -306,6 +301,7 @@ class Wang:
             # Get results from process pool
             dir1_results = map1_result.get()
             dir2_results = map2_result.get()
+
         except KeyboardInterrupt:
             pool.terminate()
             raise

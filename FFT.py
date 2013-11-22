@@ -81,16 +81,3 @@ class FFT:
         "return x times the hanning window of len(x)"
         return np.hanning(len(x))*x
 
-    @staticmethod
-    def __mix(samples):
-        """Mix an arbitrary number of channels into one."""
-        result = np.zeros(samples.shape[1])
-        channels = len(samples)
-        for i in xrange(len(result)):
-            sum = 0
-            for j in range(channels):
-                sum += samples[j][i]
-            mean = sum / channels
-            result[i] = mean
-
-        return result
