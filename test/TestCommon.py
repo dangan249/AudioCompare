@@ -12,10 +12,7 @@ class TestCommon(unittest.TestCase):
     errorRegexString = '^ERROR(.*)$'
     errorPattern = re.compile(errorRegexString)
 
-    matchRegexString = '^MATCH(.*)$'
-    matchPattern = re.compile(matchRegexString)
-
-    noMatchRegexString = '^NO MATCH(.*)$'
+    noMatchRegexString = '^NO MATCH$'
     noMatchPattern = re.compile(noMatchRegexString)
 
     def create_command(self, files):
@@ -66,10 +63,11 @@ class TestCommon(unittest.TestCase):
                             msg=name + " - should_produce_errors: Return Code Incorrect (Expected:Not 0 Actual:" + str(
                                 returnCode) + ")")
 
-    def should_not_produce_errors(self, files=[], name="should_not_produce_error", shouldMatch=True):
+    def should_not_produce_errors(self, files=[], name="should_not_produce_error", shouldMatch=True, shorter="", longer=""):
         if (shouldMatch):
-            pattern = self.matchPattern
-            reString = self.matchRegexString
+            #MATCH shorter_file longer_file (optional: (UP TO 25 ascii characters that ARE NOT ")"))
+            reString = '^MATCH {0} {1}((?=\s) \((([\x00-\x28]|[\x30-\x7F]){{0,25}})\)$|$)'.format(shorter, longer)
+            pattern = re.compile(reString)
         else:
             pattern = self.noMatchPattern
             reString = self.noMatchRegexString
