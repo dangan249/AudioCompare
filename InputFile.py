@@ -32,7 +32,7 @@ class InputFile:
             canonical_form = self.workingdir + str( time.time() )
             
             #make sure the filename has a ".mp3" extension before sending to lame
-            if filename.find(".mp3") == -1 :
+            if filename[-4:] != ".mp3" :
                 # create a copy of the file in                 
                 temp_file_name =  self.workingdir + str(time.time()) + ".mp3" 
                 shutil.copyfile( filename, temp_file_name )
