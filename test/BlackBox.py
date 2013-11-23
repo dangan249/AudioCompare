@@ -357,6 +357,253 @@ class AudioMatchBlackBox(TestCommon):
             "non_matching_input8", shouldMatch=False)
 
 
+    #Tests: directory_expectations
+    def test_directory_expectations00(self):
+        self.should_produce_set(
+            ["test1_set", "test1_set"], "directory_expectations00", [True, True],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv2.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_deriv2.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv2.wav"]]
+        )
+    def test_directory_expectations01(self):
+        self.should_produce_set(
+            ["test4_set", "test4_set"], "directory_expectations01", [True, True],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_deriv1.wav"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_orig.mp3"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_deriv1.wav"], "test4_deriv2.wav", "test4_deriv1.wav"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_deriv2.wav"]
+        )
+
+    def test_directory_expectations02(self):
+        self.should_produce_set(
+            ["test1_set", "test4_set"], "directory_expectations02", [True, True],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv2.wav"]
+        )
+
+    def test_directory_expectations03(self):
+        self.should_produce_set(
+            ["test4_set", "test1_set"], "directory_expectations03", [True, True],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv2.wav"]
+        )
+
+    def test_directory_expectations04(self):
+        self.should_produce_set(
+            ["test1_set", "mixed_set"], "directory_expectations04", [True, True],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv2.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_deriv2.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv2.wav"]]
+        )
+
+    def test_directory_expectations05(self):
+        self.should_produce_set(
+            ["mixed_set", "test1_set"], "directory_expectations05", [True, True],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv2.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_deriv2.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv2.wav"]]
+        )
+
+    def test_directory_expectations05(self):
+        self.should_produce_set(
+            ["mixed_set", "test4_set"], "directory_expectations05", [True, True],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_deriv1.wav"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_orig.mp3"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_deriv1.wav"], "test4_deriv2.wav", "test4_deriv1.wav"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_deriv2.wav"]
+        )
+
+    def test_directory_expectations06(self):
+        self.should_produce_set(
+            ["test4_set", "test4_set_error"], "directory_expectations06", [True, True],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_ERROR, ["test4_orig.mp3", "not_a_wav.wav"]],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_deriv1.wav"],
+            [self.OUTPUT_ERROR, ["test4_deriv1.wav", "not_a_wav.wav"]],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_orig.mp3"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_deriv1.wav"], "test4_deriv2.wav", "test4_deriv1.wav"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_deriv2.wav"],
+            [self.OUTPUT_ERROR, ["test4_deriv2.wav", "not_a_wav.wav"]]
+        )
+
+    def test_directory_expectations07(self):
+        self.should_produce_set(
+            ["test4_orig.mp3", "test4_set_error"], "directory_expectations07", [False, True],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_ERROR, ["test4_orig.mp3", "not_a_wav.wav"]]
+        )
+
+    def test_directory_expectations08(self):
+        self.should_produce_set(
+            ["test4_set_error", "test4_orig.mp3"], "directory_expectations08", [True, False],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_ERROR, ["test4_orig.mp3", "not_a_wav.wav"]]
+        )
+
+    def test_directory_expectations09(self):
+        self.should_produce_set(
+            ["test1_orig.wav", "mixed_set"], "directory_expectations09", [False, True],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv2.wav"]],
+        )
+
+    def test_directory_expectations10(self):
+        self.should_produce_set(
+            ["mixed_set", "mixed_set"], "directory_expectations10", [True, True],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv2.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv1.wav", "test1_deriv2.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_orig.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv2.wav"]],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv1.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_NO_MATCH, ["test1_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_deriv2.wav"],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_deriv1.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_deriv1.wav"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_orig.mp3"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_deriv1.wav"], "test4_deriv2.wav", "test4_deriv1.wav"],
+            [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_deriv2.wav"]
+        )
+
+    def test_directory_expectations11(self):
+        self.should_produce_set(
+            ["eminem_set_1", "eminem_set_2"], "directory_expectations11", [False, True],
+            [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10_22k.mp3"], "eminem5-10_22k.mp3", "eminem_22k.mp3"],
+            [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10_22k.wav"], "eminem5-10_22k.wav", "eminem_22k.mp3"],
+            [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10.wav"], "eminem5-10.wav", "eminem_22k.mp3"],
+            [self.OUTPUT_MATCH, ["eminem_22k.wav", "eminem5-10_22k.mp3"], "eminem5-10_22k.mp3", "eminem_22k.wav"],
+            [self.OUTPUT_MATCH, ["eminem_22k.wav", "eminem5-10_22k.wav"], "eminem5-10_22k.wav", "eminem_22k.wav"],
+            [self.OUTPUT_MATCH, ["eminem_22k.wav", "eminem5-10.wav"], "eminem5-10.wav", "eminem_22k.wav"],
+            [self.OUTPUT_MATCH, ["eminem.mp3", "eminem5-10_22k.mp3"], "eminem5-10_22k.mp3", "eminem.mp3"],
+            [self.OUTPUT_MATCH, ["eminem.mp3", "eminem5-10_22k.wav"], "eminem5-10_22k.wav", "eminem.mp3"],
+            [self.OUTPUT_MATCH, ["eminem.mp3", "eminem5-10.wav"], "eminem5-10.wav", "eminem.mp3"],
+            [self.OUTPUT_MATCH, ["eminem.mp3.mp3", "eminem5-10_22k.mp3"], "eminem5-10_22k.mp3", "eminem.mp3.mp3"],
+            [self.OUTPUT_MATCH, ["eminem.mp3.mp3", "eminem5-10_22k.wav"], "eminem5-10_22k.wav", "eminem.mp3.mp3"],
+            [self.OUTPUT_MATCH, ["eminem.mp3.mp3", "eminem5-10.wav"], "eminem5-10.wav", "eminem.mp3.mp3"]
+        )
+
+    def test_directory_expectations12(self):
+        self.should_produce_set(
+            ["eminem_set_2", "eminem_set_1"], "directory_expectations12", [False, True],
+            [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10_22k.mp3"], "eminem5-10_22k.mp3", "eminem_22k.mp3"],
+            [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10_22k.wav"], "eminem5-10_22k.wav", "eminem_22k.mp3"],
+            [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10.wav"], "eminem5-10.wav", "eminem_22k.mp3"],
+            [self.OUTPUT_MATCH, ["eminem_22k.wav", "eminem5-10_22k.mp3"], "eminem5-10_22k.mp3", "eminem_22k.wav"],
+            [self.OUTPUT_MATCH, ["eminem_22k.wav", "eminem5-10_22k.wav"], "eminem5-10_22k.wav", "eminem_22k.wav"],
+            [self.OUTPUT_MATCH, ["eminem_22k.wav", "eminem5-10.wav"], "eminem5-10.wav", "eminem_22k.wav"],
+            [self.OUTPUT_MATCH, ["eminem.mp3", "eminem5-10_22k.mp3"], "eminem5-10_22k.mp3", "eminem.mp3"],
+            [self.OUTPUT_MATCH, ["eminem.mp3", "eminem5-10_22k.wav"], "eminem5-10_22k.wav", "eminem.mp3"],
+            [self.OUTPUT_MATCH, ["eminem.mp3", "eminem5-10.wav"], "eminem5-10.wav", "eminem.mp3"],
+            [self.OUTPUT_MATCH, ["eminem.mp3.mp3", "eminem5-10_22k.mp3"], "eminem5-10_22k.mp3", "eminem.mp3.mp3"],
+            [self.OUTPUT_MATCH, ["eminem.mp3.mp3", "eminem5-10_22k.wav"], "eminem5-10_22k.wav", "eminem.mp3.mp3"],
+            [self.OUTPUT_MATCH, ["eminem.mp3.mp3", "eminem5-10.wav"], "eminem5-10.wav", "eminem.mp3.mp3"]
+        )
+
+
     #Tests: efficiency_expectations
 
     def test_efficiency_expectations_matching00(self):
