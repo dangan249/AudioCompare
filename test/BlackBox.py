@@ -151,162 +151,162 @@ class AudioMatchBlackBox(TestCommon):
     def matching_input0(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_orig.wav"],
-            "matching_input0", shouldMatch=True)
+            "matching_input0", shouldMatch=True, shorter="test1_orig.wav", longer="test1_orig.wav")
 
     def matching_input1(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test1_deriv1.wav", self.testSuiteDir + "test1_orig.wav"],
-            "matching_input1", shouldMatch=True)
+            "matching_input1", shouldMatch=True, shorter="test1_deriv1.wav", longer="test1_orig.wav")
 
     def matching_input2(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test1_deriv2.wav", self.testSuiteDir + "test1_deriv1.wav"],
-            "matching_input2", shouldMatch=True)
+            "matching_input2", shouldMatch=True, shorter="test1_deriv2.wav", longer="test1_deriv1.wav")
 
     def matching_input3(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_deriv2.wav"],
-            "matching_input3", shouldMatch=True)
+            "matching_input3", shouldMatch=True, shorter="test1_orig.wav", longer="test1_deriv2.wav")
 
     def matching_input4(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test1_deriv3.wav", self.testSuiteDir + "test1_orig.wav"],
-            "matching_input4", shouldMatch=True)
+            "matching_input4", shouldMatch=True, shorter="test1_deriv3.wav", longer="test1_orig.wav")
 
     def matching_input5(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test2_orig.wav", self.testSuiteDir + "test2_orig.wav"],
-            "matching_input5", shouldMatch=True)
+            "matching_input5", shouldMatch=True, shorter="test2_orig.wav", longer="test2_orig.wav")
 
     def matching_input6(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test3_orig.wav", self.testSuiteDir + "test3_orig.wav"],
-            "matching_input6", shouldMatch=True)
+            "matching_input6", shouldMatch=True, shorter="test3_orig.wav", longer="test3_orig.wav")
 
     def matching_input7(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_deriv1.wav"],
-            "matching_input7", shouldMatch=True)
+            "matching_input7", shouldMatch=True, shorter="test1_orig.wav", longer="test1_deriv1.wav")
 
     def matching_input8(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test4_deriv2.wav", self.testSuiteDir + "test4_orig.mp3"],
-            "matching_input8", shouldMatch=True)
+            "matching_input8", shouldMatch=True, shorter="test4_deriv2.wav", longer="test4_orig.mp3")
 
     def matching_input9(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test4_orig.mp3", self.testSuiteDir + "test4_deriv2.wav"],
-            "matching_input9", shouldMatch=True)
+            "matching_input9", shouldMatch=True, shorter="test4_deriv2.wav", longer="test4_orig.mp3")
 
     def matching_input10(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test4_orig.mp3", self.testSuiteDir + "test4_deriv1.wav"],
-            "matching_input10", shouldMatch=True)
+            "matching_input10", shouldMatch=True, shorter="test4_orig.mp3", longer="test4_deriv1.wav")
 
     def matching_input11(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test4_deriv1.wav", self.testSuiteDir + "test4_orig.mp3"],
-            "matching_input11", shouldMatch=True)
+            "matching_input11", shouldMatch=True, shorter="test4_deriv1.mp3", longer="test4_orig.wav")
 
     def matching_input12(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3.mp3", self.testSuiteDir + "eminem.mp3.mp3"],
-            "matching_input12", shouldMatch=True)
+            "matching_input12", shouldMatch=True, shorter="eminem.mp3.mp3", longer="eminem.mp3.mp3")
 
     def matching_input13(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3.mp3", self.testSuiteDir + "eminem.wav"],
-            "matching_input13", shouldMatch=True)
+            "matching_input13", shouldMatch=True, shorter="eminem.mp3.mp3", longer="eminem.wav")
 
     def matching_input14(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3.mp3", self.testSuiteDir + "eminem.wav.mp3"],
-            "matching_input14", shouldMatch=True)
+            "matching_input14", shouldMatch=True, shorter="eminem.mp3.mp3", longer="eminem.wav.mp3")
 
     def matching_input15(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem5-10_22k.mp3", self.testSuiteDir + "eminem.wav.mp3"],
-            "matching_input15", shouldMatch=True)
+            "matching_input15", shouldMatch=True, shorter="eminem5-10_22k.mp3", longer="eminem.wav.mp3")
 
     def matching_input16(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.wav.mp3", self.testSuiteDir + "eminem5-10_22k.mp3"],
-            "matching_input16", shouldMatch=True)
+            "matching_input16", shouldMatch=True, shorter="eminem5-10_22k.mp3", longer="eminem.wav.mp3")
 
     def matching_input17(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.wav.mp3", self.testSuiteDir + "eminem5-10_22k.wav"],
-            "matching_input17", shouldMatch=True)
+            "matching_input17", shouldMatch=True, shorter="eminem5-10_22k.wav", longer="eminem.wav.mp3")
 
     def matching_input18(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem5-10_22k.mp3", self.testSuiteDir + "eminem5-10_22k.wav"],
-            "matching_input18", shouldMatch=True)
+            "matching_input18", shouldMatch=True, shorter="eminem5-10_22k.mp3", longer="eminem5-10_22k.wav")
 
     def matching_input19(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem5-10_22k.mp3", self.testSuiteDir + "eminem5-10.wav"],
-            "matching_input19", shouldMatch=True)
+            "matching_input19", shouldMatch=True, shorter="eminem5-10_22k.mp3", longer="eminem5-10.wav")
 
     def matching_input20(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem_22k.mp3", self.testSuiteDir + "eminem5-10.wav"],
-            "matching_input20", shouldMatch=True)
+            "matching_input20", shouldMatch=True, shorter="eminem5-10.wav", longer="eminem_22k.mp3")
 
     def matching_input21(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem5-10.wav", self.testSuiteDir + "eminem_22k.mp3"],
-            "matching_input21", shouldMatch=True)
+            "matching_input21", shouldMatch=True, shorter="eminem5-10.wav", longer="eminem_22k.mp3")
 
     def matching_input22(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem_22k.wav", self.testSuiteDir + "eminem_22k.mp3"],
-            "matching_input22", shouldMatch=True)
+            "matching_input22", shouldMatch=True, shorter="eminem_22k.wav", longer="eminem_22k.mp3")
 
     def matching_input23(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem_22k.mp3", self.testSuiteDir + "eminem_22k.wav"],
-            "matching_input23", shouldMatch=True)
+            "matching_input23", shouldMatch=True, shorter="eminem_22k.mp3", longer="eminem_22k.wav")
 
     def matching_input24(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem_22k.wav"],
-            "matching_input24", shouldMatch=True)
+            "matching_input24", shouldMatch=True, shorter="eminem.mp3", longer="eminem_22k.wav")
 
     def matching_input25(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem_22k.mp3"],
-            "matching_input25", shouldMatch=True)
+            "matching_input25", shouldMatch=True, shorter="eminem.mp3", longer="eminem_22k.mp3")
 
     def matching_input26(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem5-10_22k.wav"],
-            "matching_input26", shouldMatch=True)
+            "matching_input26", shouldMatch=True, shorter="eminem5-10_22k.wav", longer="eminem.mp3")
 
     def matching_input27(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem5-10_22k.mp3"],
-            "matching_input27", shouldMatch=True)
+            "matching_input27", shouldMatch=True, shorter="eminem5-10_22k.mp3", longer="eminem.mp3")
 
     def matching_input28(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem5-10.wav"],
-            "matching_input28", shouldMatch=True)
+            "matching_input28", shouldMatch=True, shorter="eminem5-10.wav", longer="eminem.mp3")
 
     def matching_input29(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "actually_an_mpthree.wav", self.testSuiteDir + "actually_an_mpthree.mp3"],
-            "matching_input29", shouldMatch=True)
+            "matching_input29", shouldMatch=True, shorter="actually_an_mpthree.wav", longer="actually_an_mpthree.mp3")
 
     def matching_input30(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "actually_an_mpthree.mp3", self.testSuiteDir + "actually_an_mpthree.wav"],
-            "matching_input30", shouldMatch=True)
+            "matching_input30", shouldMatch=True, shorter="actually_an_mpthree.mp3", longer="actually_an_mpthree.wav")
 
     def matching_input31(self):
         self.should_not_produce_errors(
-            [self.testSuiteDir + "actually_an_mpthree.wav", self.testSuiteDir + "actually_an_mpthree.wav"],
-            "matching_input31", shouldMatch=True)
+            [self.testSuiteDir + "actually_an_mpthree.wav", self.testSuiteDir + "actually_an_mpthree.pie"],
+            "matching_input31", shouldMatch=True, shorter="actually_an_mpthree.wav", longer="actually_an_mpthree.pie")
 
     #Tests: non_matching_input
     #Note: Not prepended with "test_" due to later efficiency testing
