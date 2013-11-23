@@ -29,7 +29,14 @@ class InputFile:
 
         if  not self.__is_wave_file( self.wav_file ):   
             self.wav_file.close()
-            canonical_form = self.workingdir + "/tempwavfile" + str( time.time() )
+            canonical_form = self.workingdir + str( time.time() )
+            
+            #make sure the filename has a ".mp3" extension before sending to lame
+            if filename.find(".mp3") == -1 :
+                # create a copy of the file in                 
+                temp_file_name =  self.workingdir + str(time.time()) + ".mp3" 
+                shutil.copyfile( filename, temp_file_name )
+                filename = temp_file_name
             # Use lame to make a wav representation of the mp3 file to be analyzed
             lame = ['/course/cs4500f13/bin/lame', '--silent', '--decode', filename, canonical_form]
             return_code = subprocess.call(lame, shell=False)
