@@ -52,16 +52,21 @@ class ChunkInfo:
 
 class MatchResult:
     """The result of comparing two files."""
-    def __init__(self, file1, file2, score):
+    def __init__(self, file1, file2, file1_len, file2_len, score):
         self.file1 = file1
         self.file2 = file2
+        self.file1_len = file1_len
+        self.file2_len = file2_len
         self.score = score
 
     def __str__(self):
         short_file1 = os.path.basename(self.file1)
         short_file2 = os.path.basename(self.file2)
         match_string = "MATCH" if self.score > SCORE_THRESHOLD else "NO MATCH"
-        return "{m}: {f1} {f2} ({s})".format(m=match_string, f1=short_file1, f2=short_file2, s=self.score)
+        if self.file1_len < self.file2_len:
+            return "{m}: {f1} {f2} ({s})".format(m=match_string, f1=short_file1, f2=short_file2, s=self.score)
+        else:
+            return "{m}: {f2} {f1} ({s})".format(m=match_string, f1=short_file1, f2=short_file2, s=self.score)
 
 def _to_fingerprints(freq_chunks):
     """Examine the results of running chunks of audio
@@ -265,7 +270,7 @@ class Wang:
             # pure chance, so this corrects for that as well.
             score = max_offset / min_len
 
-            results.append(MatchResult(file.filename, f, score))
+            results.append(MatchResult(file.filename, f, file.file_len, file_lengths[f], score))
 
         return results
 
