@@ -156,17 +156,17 @@ class AudioMatchBlackBox(TestCommon):
     def matching_input1(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test1_deriv1.wav", self.testSuiteDir + "test1_orig.wav"],
-            "matching_input1", shouldMatch=True, shorter="test1_deriv1.wav", longer="test1_orig.wav")
+            "matching_input1", shouldMatch=True)
 
     def matching_input2(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test1_deriv2.wav", self.testSuiteDir + "test1_deriv1.wav"],
-            "matching_input2", shouldMatch=True, shorter="test1_deriv2.wav", longer="test1_deriv1.wav")
+            "matching_input2", shouldMatch=True)
 
     def matching_input3(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_deriv2.wav"],
-            "matching_input3", shouldMatch=True, shorter="test1_orig.wav", longer="test1_deriv2.wav")
+            "matching_input3", shouldMatch=True)
 
     def matching_input4(self):
         self.should_not_produce_errors(
@@ -186,7 +186,7 @@ class AudioMatchBlackBox(TestCommon):
     def matching_input7(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test1_orig.wav", self.testSuiteDir + "test1_deriv1.wav"],
-            "matching_input7", shouldMatch=True, shorter="test1_orig.wav", longer="test1_deriv1.wav")
+            "matching_input7", shouldMatch=True)
 
     def matching_input8(self):
         self.should_not_produce_errors(
@@ -201,12 +201,12 @@ class AudioMatchBlackBox(TestCommon):
     def matching_input10(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test4_orig.mp3", self.testSuiteDir + "test4_deriv1.wav"],
-            "matching_input10", shouldMatch=True, shorter="test4_orig.mp3", longer="test4_deriv1.wav")
+            "matching_input10", shouldMatch=True)
 
     def matching_input11(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "test4_deriv1.wav", self.testSuiteDir + "test4_orig.mp3"],
-            "matching_input11", shouldMatch=True, shorter="test4_deriv1.mp3", longer="test4_orig.wav")
+            "matching_input11", shouldMatch=True)
 
     def matching_input12(self):
         self.should_not_produce_errors(
@@ -216,12 +216,12 @@ class AudioMatchBlackBox(TestCommon):
     def matching_input13(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3.mp3", self.testSuiteDir + "eminem.wav"],
-            "matching_input13", shouldMatch=True, shorter="eminem.mp3.mp3", longer="eminem.wav")
+            "matching_input13", shouldMatch=True)
 
     def matching_input14(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3.mp3", self.testSuiteDir + "eminem.wav.mp3"],
-            "matching_input14", shouldMatch=True, shorter="eminem.mp3.mp3", longer="eminem.wav.mp3")
+            "matching_input14", shouldMatch=True)
 
     def matching_input15(self):
         self.should_not_produce_errors(
@@ -241,12 +241,12 @@ class AudioMatchBlackBox(TestCommon):
     def matching_input18(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem5-10_22k.mp3", self.testSuiteDir + "eminem5-10_22k.wav"],
-            "matching_input18", shouldMatch=True, shorter="eminem5-10_22k.mp3", longer="eminem5-10_22k.wav")
+            "matching_input18", shouldMatch=True)
 
     def matching_input19(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem5-10_22k.mp3", self.testSuiteDir + "eminem5-10.wav"],
-            "matching_input19", shouldMatch=True, shorter="eminem5-10_22k.mp3", longer="eminem5-10.wav")
+            "matching_input19", shouldMatch=True)
 
     def matching_input20(self):
         self.should_not_produce_errors(
@@ -261,22 +261,22 @@ class AudioMatchBlackBox(TestCommon):
     def matching_input22(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem_22k.wav", self.testSuiteDir + "eminem_22k.mp3"],
-            "matching_input22", shouldMatch=True, shorter="eminem_22k.wav", longer="eminem_22k.mp3")
+            "matching_input22", shouldMatch=True)
 
     def matching_input23(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem_22k.mp3", self.testSuiteDir + "eminem_22k.wav"],
-            "matching_input23", shouldMatch=True, shorter="eminem_22k.mp3", longer="eminem_22k.wav")
+            "matching_input23", shouldMatch=True)
 
     def matching_input24(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem_22k.wav"],
-            "matching_input24", shouldMatch=True, shorter="eminem.mp3", longer="eminem_22k.wav")
+            "matching_input24", shouldMatch=True)
 
     def matching_input25(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "eminem.mp3", self.testSuiteDir + "eminem_22k.mp3"],
-            "matching_input25", shouldMatch=True, shorter="eminem.mp3", longer="eminem_22k.mp3")
+            "matching_input25", shouldMatch=True)
 
     def matching_input26(self):
         self.should_not_produce_errors(
@@ -296,17 +296,17 @@ class AudioMatchBlackBox(TestCommon):
     def matching_input29(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "actually_an_mpthree.wav", self.testSuiteDir + "actually_an_mpthree.mp3"],
-            "matching_input29", shouldMatch=True, shorter="actually_an_mpthree.wav", longer="actually_an_mpthree.mp3")
+            "matching_input29", shouldMatch=True)
 
     def matching_input30(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "actually_an_mpthree.mp3", self.testSuiteDir + "actually_an_mpthree.wav"],
-            "matching_input30", shouldMatch=True, shorter="actually_an_mpthree.mp3", longer="actually_an_mpthree.wav")
+            "matching_input30", shouldMatch=True)
 
     def matching_input31(self):
         self.should_not_produce_errors(
             [self.testSuiteDir + "actually_an_mpthree.wav", self.testSuiteDir + "actually_an_mpthree.pie"],
-            "matching_input31", shouldMatch=True, shorter="actually_an_mpthree.wav", longer="actually_an_mpthree.pie")
+            "matching_input31", shouldMatch=True)
 
     #Tests: non_matching_input
     #Note: Not prepended with "test_" due to later efficiency testing
@@ -371,6 +371,7 @@ class AudioMatchBlackBox(TestCommon):
             [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv1.wav"]],
             [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv2.wav"]]
         )
+        
     def test_directory_expectations01(self):
         self.should_produce_set(
             ["test4_set", "test4_set"], "directory_expectations01", [True, True],
@@ -459,9 +460,9 @@ class AudioMatchBlackBox(TestCommon):
             [self.OUTPUT_MATCH, ["test1_deriv2.wav", "test1_deriv2.wav"]]
         )
 
-    def test_directory_expectations05(self):
+    def test_directory_expectations06(self):
         self.should_produce_set(
-            ["mixed_set", "test4_set"], "directory_expectations05", [True, True],
+            ["mixed_set", "test4_set"], "directory_expectations06", [True, True],
             [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
             [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
             [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
@@ -482,9 +483,9 @@ class AudioMatchBlackBox(TestCommon):
             [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_deriv2.wav"]
         )
 
-    def test_directory_expectations06(self):
+    def test_directory_expectations07(self):
         self.should_produce_set(
-            ["test4_set", "test4_set_error"], "directory_expectations06", [True, True],
+            ["test4_set", "test4_set_error"], "directory_expectations07", [True, True],
             [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_orig.mp3"]],
             [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv1.wav"]],
             [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_orig.mp3"],
@@ -499,18 +500,9 @@ class AudioMatchBlackBox(TestCommon):
             [self.OUTPUT_ERROR, ["test4_deriv2.wav", "not_a_wav.wav"]]
         )
 
-    def test_directory_expectations07(self):
-        self.should_produce_set(
-            ["test4_orig.mp3", "test4_set_error"], "directory_expectations07", [False, True],
-            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_orig.mp3"]],
-            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv1.wav"]],
-            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_orig.mp3"],
-            [self.OUTPUT_ERROR, ["test4_orig.mp3", "not_a_wav.wav"]]
-        )
-
     def test_directory_expectations08(self):
         self.should_produce_set(
-            ["test4_set_error", "test4_orig.mp3"], "directory_expectations08", [True, False],
+            ["test4_orig.mp3", "test4_set_error"], "directory_expectations08", [False, True],
             [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_orig.mp3"]],
             [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv1.wav"]],
             [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_orig.mp3"],
@@ -519,7 +511,16 @@ class AudioMatchBlackBox(TestCommon):
 
     def test_directory_expectations09(self):
         self.should_produce_set(
-            ["test1_orig.wav", "mixed_set"], "directory_expectations09", [False, True],
+            ["test4_set_error", "test4_orig.mp3"], "directory_expectations09", [True, False],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_orig.mp3"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv1.wav"]],
+            [self.OUTPUT_MATCH, ["test4_orig.mp3", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_orig.mp3"],
+            [self.OUTPUT_ERROR, ["test4_orig.mp3", "not_a_wav.wav"]]
+        )
+
+    def test_directory_expectations10(self):
+        self.should_produce_set(
+            ["test1_orig.wav", "mixed_set"], "directory_expectations10", [False, True],
             [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
             [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
             [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
@@ -528,9 +529,9 @@ class AudioMatchBlackBox(TestCommon):
             [self.OUTPUT_MATCH, ["test1_orig.wav", "test1_deriv2.wav"]],
         )
 
-    def test_directory_expectations10(self):
+    def test_directory_expectations11(self):
         self.should_produce_set(
-            ["mixed_set", "mixed_set"], "directory_expectations10", [True, True],
+            ["mixed_set", "mixed_set"], "directory_expectations11", [True, True],
             [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_orig.mp3"], "test4_orig.mp3", "test1_orig.wav"],
             [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv1.wav"], "test4_deriv1.wav", "test1_orig.wav"],
             [self.OUTPUT_NO_MATCH, ["test1_orig.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test1_orig.wav"],
@@ -569,9 +570,9 @@ class AudioMatchBlackBox(TestCommon):
             [self.OUTPUT_MATCH, ["test4_deriv2.wav", "test4_deriv2.wav"], "test4_deriv2.wav", "test4_deriv2.wav"]
         )
 
-    def test_directory_expectations11(self):
+    def test_directory_expectations12(self):
         self.should_produce_set(
-            ["eminem_set_1", "eminem_set_2"], "directory_expectations11", [False, True],
+            ["eminem_set_1", "eminem_set_2"], "directory_expectations12", [False, True],
             [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10_22k.mp3"], "eminem5-10_22k.mp3", "eminem_22k.mp3"],
             [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10_22k.wav"], "eminem5-10_22k.wav", "eminem_22k.mp3"],
             [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10.wav"], "eminem5-10.wav", "eminem_22k.mp3"],
@@ -586,9 +587,9 @@ class AudioMatchBlackBox(TestCommon):
             [self.OUTPUT_MATCH, ["eminem.mp3.mp3", "eminem5-10.wav"], "eminem5-10.wav", "eminem.mp3.mp3"]
         )
 
-    def test_directory_expectations12(self):
+    def test_directory_expectations13(self):
         self.should_produce_set(
-            ["eminem_set_2", "eminem_set_1"], "directory_expectations12", [False, True],
+            ["eminem_set_2", "eminem_set_1"], "directory_expectations13", [False, True],
             [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10_22k.mp3"], "eminem5-10_22k.mp3", "eminem_22k.mp3"],
             [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10_22k.wav"], "eminem5-10_22k.wav", "eminem_22k.mp3"],
             [self.OUTPUT_MATCH, ["eminem_22k.mp3", "eminem5-10.wav"], "eminem5-10.wav", "eminem_22k.mp3"],

@@ -64,7 +64,7 @@ class TestCommon(unittest.TestCase):
             if(len(outputTuple) > 2):
                 currRegex = self.get_regex_string(*outputTuple)
             else:
-                currRegex = [self.get_regex_string([outputTuple[0], outputTuple[1], outputTuple[1][0], outputTuple[1][1]]), self.get_regex_string([outputTuple[0], outputTuple[1], outputTuple[1][1], outputTuple[1][0]])]
+                currRegex = [self.get_regex_string(outputTuple[0], outputTuple[1], outputTuple[1][0], outputTuple[1][1]), self.get_regex_string(outputTuple[0], outputTuple[1], outputTuple[1][1], outputTuple[1][0])]
 
             if(outputTuple[0] == self.OUTPUT_ERROR):
                 errRegexes.append(currRegex)
@@ -105,6 +105,8 @@ class TestCommon(unittest.TestCase):
                         break
                     
                 currRegex = currRegex + 1
+                if(foundRegex > -1):
+                    break
 
             self.assertTrue(foundRegex > -1,
                             msg=name + " - should_produce_errors_set: STDERR incorrect line (Output line " + str(
@@ -120,18 +122,22 @@ class TestCommon(unittest.TestCase):
             foundRegex = -1
             currRegex = 0
             for outRegex in outRegexes:
-                if(not isinstance(outRegex, basestring)):
-                    compiledOutRegexes = [re.compile(outRegex[0]), re.compile(outRegex[1])]
-                else:
-                    compiledOutRegexes = [re.compile(outRegex)]
+                if(isinstance(outRegex, basestring)):
+                    outRegex = [outRegex]
 
-                
+                compiledOutRegexes = []
+                for currOutRegex in outRegex:
+                    compiledOutRegexes.append(re.compile(currOutRegex))
+
                 for compiledOutRegex in compiledOutRegexes:
                     if(compiledOutRegex.match(line)):
                         foundRegex = currRegex
                         break
 
                 currRegex = currRegex + 1
+                if(foundRegex > -1):
+                    break
+
 
             self.assertTrue(foundRegex > -1,
                             msg=name + " - should_not_produce_errors_set: STDOUT incorrect line (Output line " + str(
@@ -174,14 +180,18 @@ class TestCommon(unittest.TestCase):
                             msg=name + " - should_produce_errors: Return Code Incorrect (Expected:Not 0 Actual:" + str(
                                 returnCode) + ")")
 
-    def should_not_produce_errors(self, files=[], name="should_not_produce_error", shouldMatch=True, shorter="", longer=""):
+    def should_not_produce_errors(self, files=[], name="should_not_produce_error", shouldMatch=True, shorter='', longer=''):
         if (shouldMatch):
             #MATCH shorter_file longer_file (optional: (UP TO 25 ascii characters that ARE NOT ")"))
-            reString = self.get_regex_string(self.OUTPUT_MATCH, files, shorter, longer)
-            pattern = self.get_regex(self.OUTPUT_MATCH, files, shorter, longer)
+            if(shorter != '' or longer != ''):
+                reString = self.get_regex_string(self.OUTPUT_MATCH, files, shorter, longer)
+                patterns = [self.get_regex(self.OUTPUT_MATCH, files, shorter, longer)]
+            else:
+                reString = self.get_regex_string(self.OUTPUT_MATCH, files, os.path.basename(files[0]), os.path.basename(files[1])) + " || " + self.get_regex_string(self.OUTPUT_MATCH, files, os.path.basename(files[1]), os.path.basename(files[0]))
+                patterns = [self.get_regex(self.OUTPUT_MATCH, files, os.path.basename(files[0]), os.path.basename(files[1])), self.get_regex(self.OUTPUT_MATCH, files, os.path.basename(files[1]), os.path.basename(files[0]))]
         else:
             reString = self.get_regex_string(self.OUTPUT_NO_MATCH, files, shorter, longer)
-            pattern = self.get_regex(self.OUTPUT_NO_MATCH, files, shorter, longer)
+            patterns = [self.get_regex(self.OUTPUT_NO_MATCH, files, shorter, longer)]
 
         command = self.create_command(files)
 
@@ -192,7 +202,14 @@ class TestCommon(unittest.TestCase):
 
         #Checking Output Message
         for line in callOut.splitlines():
-            self.assertTrue(pattern.match(line),
+            didMatch = False
+
+            for pattern in patterns:
+                didMatch = pattern.match(line)
+                if(didMatch):
+                    break
+
+            self.assertTrue(didMatch,
                             msg=name + " - should_not_produce_errors: STDOUT incorrect line (Line " + str(
                                 currLine) + ") (Expected:" + reString + " Actual:" + line + ")")
             currLine += 1
