@@ -62,11 +62,13 @@ class MatchResult:
     def __str__(self):
         short_file1 = os.path.basename(self.file1)
         short_file2 = os.path.basename(self.file2)
-        match_string = "MATCH" if self.score > SCORE_THRESHOLD else "NO MATCH"
-        if self.file1_len < self.file2_len:
-            return "{m}: {f1} {f2} ({s})".format(m=match_string, f1=short_file1, f2=short_file2, s=self.score)
+        if self.score > SCORE_THRESHOLD:
+            if self.file1_len < self.file2_len:
+                return "MATCH {f1} {f2} ({s})".format(f1=short_file1, f2=short_file2, s=self.score)
+            else:
+                return "MATCH {f2} {f1} ({s})".format(f1=short_file1, f2=short_file2, s=self.score)
         else:
-            return "{m}: {f2} {f1} ({s})".format(m=match_string, f1=short_file1, f2=short_file2, s=self.score)
+            return "NO MATCH"
 
 def _to_fingerprints(freq_chunks):
     """Examine the results of running chunks of audio
