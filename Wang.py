@@ -1,5 +1,4 @@
 import math
-import time
 from FFT import FFT
 import numpy as np
 from collections import defaultdict
@@ -8,6 +7,7 @@ import multiprocessing
 import os
 import stat
 from error import *
+from common import *
 
 # This algorithm is based on the Shazam algorithm,
 # described here http://www.redcode.nl/blog/2010/06/creating-shazam-in-java/
@@ -26,10 +26,11 @@ MAX_HASH_DISTANCE = 2
 SCORE_THRESHOLD = 0
 
 
-class FileResult:
+class FileResult(BaseResult):
     """The result of fingerprinting
     an entire audio file."""
     def __init__(self, fingerprints, file_len, filename):
+        super(FileResult, self).__init__(True, "")
         self.fingerprints = fingerprints
         self.file_len = file_len
         self.filename = filename
@@ -38,7 +39,7 @@ class FileResult:
         return self.filename
 
 
-class ChunkInfo:
+class ChunkInfo(object):
     """These objects will be the values in
     our master hashes that map fingerprints
     to instances of this class."""
@@ -50,9 +51,10 @@ class ChunkInfo:
         return "Chunk: {c}, File: {f}".format(c=self.chunk_index, f=self.filename)
 
 
-class MatchResult:
+class MatchResult(BaseResult):
     """The result of comparing two files."""
     def __init__(self, file1, file2, file1_len, file2_len, score):
+        super(MatchResult, self).__init__(True, "")
         self.file1 = file1
         self.file2 = file2
         self.file1_len = file1_len
@@ -69,6 +71,7 @@ class MatchResult:
                 return "MATCH {f2} {f1} ({s})".format(f1=short_file1, f2=short_file2, s=self.score)
         else:
             return "NO MATCH"
+
 
 def _to_fingerprints(freq_chunks):
     """Examine the results of running chunks of audio
@@ -102,40 +105,44 @@ def _file_fingerprint(filename):
     of the file in seconds, and the hash table."""
 
     # Open the file
-    file = InputFile(filename)
+    try:
+        file = InputFile(filename)
 
-    # Read samples from the input files, divide them
-    # into chunks by time, and convert the samples in each
-    # chunk into the frequency domain.
-    # The chunk size is dependent on the sample rate of the
-    # file. It is important that each chunk represent the
-    # same amount of time, regardless of the sample
-    # rate of the file.
-    chunk_size_adjust_factor = (NORMAL_SAMPLE_RATE / file.get_sample_rate())
-    fft = FFT(file, int(NORMAL_CHUNK_SIZE / chunk_size_adjust_factor))
-    series = fft.series()
-    
-    file_len = file.get_total_samples() / file.get_sample_rate()
+        # Read samples from the input files, divide them
+        # into chunks by time, and convert the samples in each
+        # chunk into the frequency domain.
+        # The chunk size is dependent on the sample rate of the
+        # file. It is important that each chunk represent the
+        # same amount of time, regardless of the sample
+        # rate of the file.
+        chunk_size_adjust_factor = (NORMAL_SAMPLE_RATE / file.get_sample_rate())
+        fft = FFT(file, int(NORMAL_CHUNK_SIZE / chunk_size_adjust_factor))
+        series = fft.series()
 
-    file.close()
+        file_len = file.get_total_samples() / file.get_sample_rate()
 
-    # Find the indices of the loudest frequencies
-    # in each "bucket" of frequencies (for every chunk).
-    # These loud frequencies will become the
-    # fingerprints that we'll use for matching.
-    # Each chunk will be reduced to a tuple of
-    # 4 numbers which are 4 of the loudest frequencies
-    # in that chunk.
-    # Convert each tuple in winners to a single
-    # number. This number is unique for each possible
-    # tuple. This hopefully makes things more
-    # efficient.
-    fingerprints = _to_fingerprints(series)
+        file.close()
+
+        # Find the indices of the loudest frequencies
+        # in each "bucket" of frequencies (for every chunk).
+        # These loud frequencies will become the
+        # fingerprints that we'll use for matching.
+        # Each chunk will be reduced to a tuple of
+        # 4 numbers which are 4 of the loudest frequencies
+        # in that chunk.
+        # Convert each tuple in winners to a single
+        # number. This number is unique for each possible
+        # tuple. This hopefully makes things more
+        # efficient.
+        fingerprints = _to_fingerprints(series)
+
+    except Exception, e:
+        return FileErrorResult(e.message)
 
     return FileResult(fingerprints, file_len, filename)
 
 
-class Wang:
+class Wang(object):
     """Create an instance of this class to use our matching system."""
 
     def __init__(self, dir1, dir2):
@@ -212,6 +219,14 @@ class Wang:
         return results
 
     @staticmethod
+    def __handle_errors(l):
+        for r in l:
+            if not r.success:
+                warn(r.message)
+
+        return filter(lambda x: x.success, l)
+
+    @staticmethod
     def __report_file_matches(file, master_hash, file_lengths):
         """Find files from the master hash that match
         the given file.
@@ -277,7 +292,7 @@ class Wang:
         return results
 
 
-    def match(self, debug=False, verbose=False):
+    def match(self):
         """Takes two AbstractInputFiles as input,
         and returns a boolean as output, indicating
         if the two files match."""
@@ -306,6 +321,9 @@ class Wang:
             pool.close()
 
             # Get results from process pool
+            # Any results that are errors should
+            # be removed from the list, this indicates
+            # that an error occurred.
             dir1_results = map1_result.get()
             dir2_results = map2_result.get()
 
@@ -313,14 +331,30 @@ class Wang:
             pool.terminate()
             raise
 
-        dir2_master_hash = Wang.__combine_hashes(dir2_results)
-        dir2_file_lengths = Wang.__file_lengths(dir2_results)
-
         results = []
+
+        # If there was an error in fingerprinting a file,
+        # add a special ErrorResult to our results list
+        dir1_errors = filter(lambda x: not x.success, dir1_results)
+        dir2_errors = filter(lambda x: not x.success, dir2_results)
+        results.extend(dir1_errors)
+        results.extend(dir2_errors)
+
+        # Proceed only with fingerprints that were computed
+        # successfully
+        dir1_successes = filter(lambda x: x.success, dir1_results)
+        dir2_successes = filter(lambda x: x.success, dir2_results)
+
+        # This is a hash combining all the fingerprints
+        # from files in dir2
+        dir2_master_hash = Wang.__combine_hashes(dir2_successes)
+
+        # This maps filenames to the lengths of the files
+        dir2_file_lengths = Wang.__file_lengths(dir2_successes)
 
         # Loop through each file in the first search path our
         # program was given.
-        for file in dir1_results:
+        for file in dir1_successes:
             # For each file, check its fingerprints against those in the
             # second search path. For matching
             # fingerprints, look up the the times (chunk number)
@@ -332,8 +366,7 @@ class Wang:
             # other. This indicates that the two files
             # contain similar audio.
             file_matches = Wang.__report_file_matches(file, dir2_master_hash, dir2_file_lengths)
-            for match_result in file_matches:
-                results.append(match_result)
+            results.extend(file_matches)
 
         return results
 

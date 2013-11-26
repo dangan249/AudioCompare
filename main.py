@@ -38,16 +38,26 @@ def audio_matcher():
     if len(search_paths) != 2:
         die("Must provide exactly two input files or directories.")
 
+    code = 0
     # Use our matching system
     try:
         matcher = Wang.Wang(search_paths[0], search_paths[1])
-        for match in matcher.match(verbose=args.test):
-            print match
+        results = matcher.match()
+
+        for match in results:
+            if not match.success:
+                code = 1
+                warn(match.message)
+            else:
+                print match
+
     except Exception, e:
         if args.test:
             raise
         die(e)
         return
 
+    return code
+
 if __name__ == "__main__":
-    audio_matcher()
+    exit(audio_matcher())
