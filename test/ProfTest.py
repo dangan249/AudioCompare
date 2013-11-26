@@ -318,10 +318,35 @@ class AudioMatchBlackBox(TestCommon):
             [self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x3.wav"],
             "wayfaring_x3", shouldMatch=False)
 
-    def test_hewlett_x7(self):
+    def test_wayfaring_x4(self):
         self.should_not_produce_errors(
-            [self.testSuiteDir + "hewlett.wav", self.testSuiteDir + "x7.wav"],
-            "wayfaring_x7", shouldMatch=False)
+            [self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x4.wav"],
+            "wayfaring_x4", shouldMatch=False)
+
+    def test_wayfaring_x5(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x5.wav"],
+            "wayfaring_x5", shouldMatch=False)
+
+    def test_wayfaring_x6(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x6.wav"],
+            "wayfaring_x6", shouldMatch=False)
+
+    def test_wayfaring_x10(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x10.wav"],
+            "wayfaring_x10", shouldMatch=False)
+
+    def test_wayfaring_x11(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x11.wav"],
+            "wayfaring_x11", shouldMatch=False)
+
+    def test_wayfaring_x12(self):
+        self.should_not_produce_errors(
+            [self.testSuiteDir + "wayfaring.wav", self.testSuiteDir + "x12.wav"],
+            "wayfaring_x12", shouldMatch=False)
 
     def test_x10_x7(self):
         self.should_not_produce_errors(

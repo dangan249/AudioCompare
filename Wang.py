@@ -23,7 +23,7 @@ NORMAL_CHUNK_SIZE = 1024
 NORMAL_SAMPLE_RATE = 44100.0
 
 MAX_HASH_DISTANCE = 2
-SCORE_THRESHOLD = 0
+SCORE_THRESHOLD = 5
 
 
 class FileResult(BaseResult):
@@ -219,14 +219,6 @@ class Wang(object):
         return results
 
     @staticmethod
-    def __handle_errors(l):
-        for r in l:
-            if not r.success:
-                warn(r.message)
-
-        return filter(lambda x: x.success, l)
-
-    @staticmethod
     def __report_file_matches(file, master_hash, file_lengths):
         """Find files from the master hash that match
         the given file.
@@ -291,7 +283,6 @@ class Wang(object):
 
         return results
 
-
     def match(self):
         """Takes two AbstractInputFiles as input,
         and returns a boolean as output, indicating
@@ -321,9 +312,6 @@ class Wang(object):
             pool.close()
 
             # Get results from process pool
-            # Any results that are errors should
-            # be removed from the list, this indicates
-            # that an error occurred.
             dir1_results = map1_result.get()
             dir2_results = map2_result.get()
 
@@ -335,26 +323,38 @@ class Wang(object):
 
         # If there was an error in fingerprinting a file,
         # add a special ErrorResult to our results list
-        dir1_errors = filter(lambda x: not x.success, dir1_results)
-        dir2_errors = filter(lambda x: not x.success, dir2_results)
-        results.extend(dir1_errors)
-        results.extend(dir2_errors)
+        results.extend(filter(lambda x: not x.success, dir1_results))
+        results.extend(filter(lambda x: not x.success, dir2_results))
 
         # Proceed only with fingerprints that were computed
         # successfully
         dir1_successes = filter(lambda x: x.success, dir1_results)
         dir2_successes = filter(lambda x: x.success, dir2_results)
 
-        # This is a hash combining all the fingerprints
-        # from files in dir2
-        dir2_master_hash = Wang.__combine_hashes(dir2_successes)
-
         # This maps filenames to the lengths of the files
+        dir1_file_lengths = Wang.__file_lengths(dir1_successes)
         dir2_file_lengths = Wang.__file_lengths(dir2_successes)
+
+        # Get the combined sizes of the files in our two search
+        # paths
+        dir1_size = sum(dir1_file_lengths.viewvalues())
+        dir2_size = sum(dir2_file_lengths.viewvalues())
+
+        # Whichever search path has more data in it is the
+        # one we want to put in the master hash, and then query
+        # via the other one
+        if dir1_size < dir2_size:
+            dir_successes = dir1_successes
+            master_hash = Wang.__combine_hashes(dir2_successes)
+            file_lengths = dir2_file_lengths
+        else:
+            dir_successes = dir2_successes
+            master_hash = Wang.__combine_hashes(dir1_successes)
+            file_lengths = dir1_file_lengths
 
         # Loop through each file in the first search path our
         # program was given.
-        for file in dir1_successes:
+        for file in dir_successes:
             # For each file, check its fingerprints against those in the
             # second search path. For matching
             # fingerprints, look up the the times (chunk number)
@@ -365,7 +365,7 @@ class Wang(object):
             # same time difference relative to each
             # other. This indicates that the two files
             # contain similar audio.
-            file_matches = Wang.__report_file_matches(file, dir2_master_hash, dir2_file_lengths)
+            file_matches = Wang.__report_file_matches(file, master_hash, file_lengths)
             results.extend(file_matches)
 
         return results
