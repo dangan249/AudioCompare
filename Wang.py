@@ -1,4 +1,5 @@
 import math
+import itertools
 from FFT import FFT
 import numpy as np
 from collections import defaultdict
@@ -275,7 +276,10 @@ class Wang(object):
             # same time, a long file that should *not* match another file
             # will generate a decent number of matching fingerprints by
             # pure chance, so this corrects for that as well.
-            score = max_offset / min_len
+            if min_len > 0:
+                score = max_offset / min_len
+            else:
+                score = 0
 
             results.append(MatchResult(file.filename, f, file.file_len, file_lengths[f], score))
 
@@ -326,8 +330,18 @@ class Wang(object):
 
         # Proceed only with fingerprints that were computed
         # successfully
-        dir1_successes = filter(lambda x: x.success, dir1_results)
-        dir2_successes = filter(lambda x: x.success, dir2_results)
+        dir1_successes = filter(lambda x: x.success and x.file_len > 0, dir1_results)
+        dir2_successes = filter(lambda x: x.success and x.file_len > 0, dir2_results)
+
+        # Empty files should match other empty files
+        # Our matching algorithm will not report these as a match,
+        # so we have to make a special case for it.
+        dir1_empty_files = filter(lambda x: x.success and x.file_len == 0, dir1_results)
+        dir2_empty_files = filter(lambda x: x.success and x.file_len == 0, dir2_results)
+
+        # Every empty file should match every other empty file
+        for empty_file1, empty_file2 in itertools.product(dir1_empty_files, dir2_empty_files):
+            results.append(MatchResult(empty_file1.filename, empty_file2.filename, empty_file1.file_len, empty_file2.file_len, SCORE_THRESHOLD + 1))
 
         # This maps filenames to the lengths of the files
         dir1_file_lengths = Wang.__file_lengths(dir1_successes)
