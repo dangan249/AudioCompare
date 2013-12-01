@@ -22,7 +22,7 @@ class InputFile:
 
         At the end of this constructor. self.wav_file will be positioned
         at the first byte of audio data in the file."""
-        
+        original_name = filename
         self.wav_file = open( filename, "r" )
         #try to use lame to convert
         self.workingdir = tempfile.mkdtemp()
@@ -42,7 +42,7 @@ class InputFile:
             return_code = subprocess.call(lame, shell=False)
             
             if return_code != 0 or not os.path.exists(canonical_form):
-                raise IOError("{f} 's format is not supported".format(f=filename))
+                raise IOError("{f} 's format is not supported".format(f=original_name))
             
             # At this point, we should be confident that "lame" create a correct WAVE file
             self.wav_file = open( canonical_form , "r")
