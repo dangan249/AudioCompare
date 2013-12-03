@@ -302,6 +302,7 @@ class Wang(object):
             cpus = multiprocessing.cpu_count()
         except NotImplementedError:
             cpus = 1
+
         # Construct a process pool to give the task of
         # fingerprinting audio files
         pool = multiprocessing.Pool(cpus)
@@ -313,8 +314,8 @@ class Wang(object):
             map2_result = pool.map_async(_file_fingerprint, dir2_files)
 
             # Wait for pool to finish processing
-            pool.join()
             pool.close()
+            pool.join()
 
             # Get results from process pool
             dir1_results = map1_result.get()
