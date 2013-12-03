@@ -14,20 +14,27 @@ Charles Connell -- charles@connells.org
 
 Run Instructions
 ----------------
-To run our program in this directory, type:
+To run our program in this directory, type one of:
    ./p4500 -f <file1.wav> -f <file2.wav>
+   ./p4500 -f <file1.wav> -d <file2.wav>
+   ./p4500 -d <file1.wav> -f <file2.wav>
+   ./p4500 -d <file1.wav> -d <file2.wav>
+
+Arguments following a "-f" argument must be a filename,
+and arguments following a "-d" argument must be a directory
+containing only audio files. Input files must be WAVE or MP3 files.
+You may list the same file or directory twice.
 
 There must be an executable called "python2.7"
-in your path. This is not present on all CCIS
-Linux machines, but it is present on some.
+in your path. You must also have the numpy module installed.
+This is not present on all CCIS Linux machines, but it is present on some.
 
-If no errors, the output will be the string
-"MATCH" or "NO MATCH". If an error, a string
-starting with "ERROR: " will be output to standard
-error.
-
-Input files must be WAVE or MP3 files. You may list
-the same file twice.
+If errors are found, appropriate error messages
+will be printed, and the program may continue if it can.
+Match results will be printed as "NO MATCH" if two
+non-matching files were compared, and "MATCH ..."
+if two matching files were compared, listing the two
+files that matched, and giving the match score.
 
 Third-Party Software Acknowledgements
 -------------------------------------

@@ -1,25 +1,38 @@
 
 Please see individual files for descriptions of individual methods
 
-
 main.py
  - Entry point of the program
  - Opens input files
  - Runs matching algorithm on them
 
-Input System:
--------------
+Wang.py
+ - Contains the code for the matching
+   algorithm that we chose
 
-AbstractInputFile:
- - Defines interface for an input file
+common.py
+ - A few things that are not specific
+   to our matching algorithm, so they
+   get their own file
 
-WavInputFile:
- - Used to open and examine WAVE files
+error.py
+ - A few functions we use to report errors
+
+InputFile.py
+ - Opens and reads audio files
+
+FFT.py
+ - Performs an FFT transformation on
+   audio samples
 
 
 Processing:
 -----------
-Open each file.
+The input to the program is two search paths:
+either directories or single files. We turn these
+into two lists of files.
+
+Open every file.
 
 Read samples from the input files, divide them
 into chunks by time, and convert the samples in each
@@ -31,33 +44,29 @@ These loud frequencies will become the
 fingerprints that we'll use for matching.
 Each chunk will be reduced to a tuple of
 4 numbers which are 4 of the loudest frequencies
-in that chunk.
+in that chunk. This tuple is then encoded into
+a single 32 bit integer.
 
 Generate a hash mapping the fingerprints
-to the chunk numbers that they occurred in.
+to the chunk numbers and files that they occurred in.
 Chunk numbers are an approximation for the
 timestamp in the file, and we'll use them
 that way further on.
 
-Create a mapping called offests
-to hold the difference in chunk numbers of
-the matches we will find.
-We'll map those differences to the number of matches
-found with that difference.
-This allows us to see if many fingerprints
-from different files occurred at the same
-time offsets relative to each other.
+For the search path that has a greater combined file length
+(in other words, basically "more data"), we combine all the
+per-file hashes into one master hash. This maps every fingerprint
+found in the search path to the chunk index and file that the fingerprint
+was found in. To emphasize, this is not a hash of hashes, it
+is a single hash. This means we can take a fingerprint and
+make a constant-time lookup into the master hash and find at what
+time and in what file this fingerprint also appears.
 
-Look to see if fingerprints from file 1
-also were found in file 2. For matching
-fingerprints, look up the the times (chunk number)
-that the fingerprint occurred
-in each file. Store the time differences in
-offsets. The point of this is to see if there
-are many matching fingerprints at the
-same time difference relative to each
-other. This indicates that the two files
-contain similar audio.
+Now, for every file in the OTHER search path (the one
+with less data in it), see what we get when look up
+its fingerprints in the master hash. If we get a lot of matches
+at consistent time differences in a single file, then we might
+have a match.
 
 The length of the shorter file in important
 to deciding whether two audio files match.
@@ -73,3 +82,9 @@ than a long file would, so we take this into account. At the
 same time, a long file that should *not* match another file
 will generate a decent number of matching fingerprints by
 pure chance, so this corrects for that as well.
+
+What's really cool is that our matching algorithm scales about
+linearly with the size of the input, not quadratically. In order words,
+the time to compare two directories of n files is about 2n, not n^2.
+
+Try comparing A5new/Excerpts with itself and see how fast it is.
