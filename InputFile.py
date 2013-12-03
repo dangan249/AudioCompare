@@ -67,19 +67,19 @@ class InputFile:
     @staticmethod
     def __is_wave_file(file):
 
-        if ( !InputFile.__check_riff_format(file) ):
+        if ( not InputFile.__check_riff_format(file) ):
             return False 
-        if ( !InputFile.__check_wave_id(file) ):
+        if ( not InputFile.__check_wave_id(file) ):
             return False
-        if ( !InputFile.__check_fmt(file) ):
+        if ( not InputFile.__check_fmt(file) ):
             return False
 
         file.seek( 20 )
         data = file.read( 2 ) 
         file.seek( 0 )
-        if( ! InputFile.__check_fmt_valid(data) ):
+        if( not InputFile.__check_fmt_valid(data) ):
             return False        
-        return  InputFile.__check_data(file) )
+        return  InputFile.__check_data(file)
     
     @staticmethod
     def __check_riff_format(file):
