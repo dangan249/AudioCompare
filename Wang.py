@@ -311,6 +311,9 @@ class Wang(object):
             # to parallelize the work neatly.
             map1_result = pool.map_async(_file_fingerprint, dir1_files)
             map2_result = pool.map_async(_file_fingerprint, dir2_files)
+
+            # Wait for pool to finish processing
+            pool.join()
             pool.close()
 
             # Get results from process pool
