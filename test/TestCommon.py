@@ -11,7 +11,7 @@ class TestCommon(unittest.TestCase):
 
     testSuiteDir = os.path.dirname(os.path.abspath(__file__)) + "/../test_data/"
     testCWD = os.path.dirname(os.path.abspath(__file__)) + "/../"
-    runCommand = os.path.dirname(os.path.abspath(__file__)) + "/../p4500"
+    runCommand = os.path.dirname(os.path.abspath(__file__)) + "/../audiomatch"
 
     def create_command(self, files, whichAreDirectories=[False, False]):
         command = [self.runCommand]

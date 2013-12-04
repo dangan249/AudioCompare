@@ -86,5 +86,3 @@ pure chance, so this corrects for that as well.
 What's really cool is that our matching algorithm scales about
 linearly with the size of the input, not quadratically. In order words,
 the time to compare two directories of n files is about 2n, not n^2.
-
-Try comparing A5new/Excerpts with itself and see how fast it is.

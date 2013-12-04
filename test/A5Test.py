@@ -9,7 +9,7 @@ class AudioMatchBlackBox(TestCommon):
     #Get current directory. We know what files are in here
     testSuiteDir = os.path.dirname(os.path.abspath(__file__)) + "/../test_data/A5new/"
     testCWD = os.path.dirname(os.path.abspath(__file__)) + "/../"
-    runCommand = os.path.dirname(os.path.abspath(__file__)) + "/../p4500"
+    runCommand = os.path.dirname(os.path.abspath(__file__)) + "/../audiomatch"
 
     # Files to SHOULD match
     def test_z00_z00(self):

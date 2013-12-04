@@ -10,9 +10,6 @@ import stat
 from error import *
 from common import *
 
-# This algorithm is based on the Shazam algorithm,
-# described here http://www.redcode.nl/blog/2010/06/creating-shazam-in-java/
-# and here http://www.ee.columbia.edu/~dpwe/papers/Wang03-shazam.pdf
 
 BUCKET_SIZE = 20
 BUCKETS = 4

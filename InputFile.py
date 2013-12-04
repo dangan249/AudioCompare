@@ -22,6 +22,8 @@ class InputFile:
 
         At the end of this constructor. self.wav_file will be positioned
         at the first byte of audio data in the file."""
+        lame = os.path.dirname(os.path.abspath(__file__)) + "/lame"
+
         original_name = filename
         self.wav_file = open( filename, "r" )
         #try to use lame to convert
@@ -38,7 +40,7 @@ class InputFile:
                 shutil.copyfile( filename, temp_file_name )
                 filename = temp_file_name
             # Use lame to make a wav representation of the mp3 file to be analyzed
-            lame = ['/course/cs4500f13/bin/lame', '--silent', '--decode', filename, canonical_form]
+            lame = [lame, '--silent', '--decode', filename, canonical_form]
             return_code = subprocess.call(lame, shell=False)
             
             if return_code != 0 or not os.path.exists(canonical_form):
