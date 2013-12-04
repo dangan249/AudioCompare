@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from error import *
-import Wang
+from Matcher import Matcher
 from argparse import ArgumentParser
 
 def audio_matcher():
@@ -29,7 +29,7 @@ def audio_matcher():
 
     code = 0
     # Use our matching system
-    matcher = Wang.Wang(search_paths[0], search_paths[1])
+    matcher = Matcher(search_paths[0], search_paths[1])
     results = matcher.match()
 
     for match in results:

@@ -1,5 +1,5 @@
 import os
-from Wang import Wang
+from Matcher import Wang
 
 
 def print_results(tests, should_match):

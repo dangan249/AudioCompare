@@ -138,7 +138,7 @@ def _file_fingerprint(filename):
     return FileResult(fingerprints, file_len, filename)
 
 
-class Wang(object):
+class Matcher(object):
     """Create an instance of this class to use our matching system."""
 
     def __init__(self, dir1, dir2):
@@ -287,8 +287,8 @@ class Wang(object):
         and returns a boolean as output, indicating
         if the two files match."""
 
-        dir1_files = Wang.__search_dir(self.dir1)
-        dir2_files = Wang.__search_dir(self.dir2)
+        dir1_files = Matcher.__search_dir(self.dir1)
+        dir2_files = Matcher.__search_dir(self.dir2)
 
         # Try to determine how many
         # processors are in the computer
@@ -345,8 +345,8 @@ class Wang(object):
             results.append(MatchResult(empty_file1.filename, empty_file2.filename, empty_file1.file_len, empty_file2.file_len, SCORE_THRESHOLD + 1))
 
         # This maps filenames to the lengths of the files
-        dir1_file_lengths = Wang.__file_lengths(dir1_successes)
-        dir2_file_lengths = Wang.__file_lengths(dir2_successes)
+        dir1_file_lengths = Matcher.__file_lengths(dir1_successes)
+        dir2_file_lengths = Matcher.__file_lengths(dir2_successes)
 
         # Get the combined sizes of the files in our two search
         # paths
@@ -358,11 +358,11 @@ class Wang(object):
         # via the other one
         if dir1_size < dir2_size:
             dir_successes = dir1_successes
-            master_hash = Wang.__combine_hashes(dir2_successes)
+            master_hash = Matcher.__combine_hashes(dir2_successes)
             file_lengths = dir2_file_lengths
         else:
             dir_successes = dir2_successes
-            master_hash = Wang.__combine_hashes(dir1_successes)
+            master_hash = Matcher.__combine_hashes(dir1_successes)
             file_lengths = dir1_file_lengths
 
         # Loop through each file in the first search path our
@@ -378,7 +378,7 @@ class Wang(object):
             # same time difference relative to each
             # other. This indicates that the two files
             # contain similar audio.
-            file_matches = Wang.__report_file_matches(file, master_hash, file_lengths)
+            file_matches = Matcher.__report_file_matches(file, master_hash, file_lengths)
             results.extend(file_matches)
 
         return results

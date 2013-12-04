@@ -1,8 +1,8 @@
 import sys
 from InputFile import InputFile
 from Tkinter import *
-from Wang import *
-import Wang
+from Matcher import *
+import Matcher
 from FFT import FFT
 import numpy
 
@@ -38,7 +38,7 @@ def visualizer():
 
     norm = LogNorm(0.000000001, numpy.amax(freq_chunks))
 
-    winners = Wang._bucket_winners(freq_chunks)
+    winners = Matcher._bucket_winners(freq_chunks)
 
     # initialize an empty window
     master = Tk()
