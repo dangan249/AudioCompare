@@ -1,5 +1,5 @@
 Summary
-=======
+-------
 
 Compares two audio files or directories of audio files to gauge their
 similarity. A file that is likely to have been derived from another
@@ -24,13 +24,13 @@ if two matching files were compared, listing the two
 files that matched, and giving the match score.
 
 Dependencies
-============
+------------
 
 * Python 2.7
 * NumPy
 
 History
-=======
+-------
 
 The program was written as the semester project
 for CS 4500, Fall 2013, with Professor William Clinger
@@ -44,7 +44,7 @@ Charles Connell
 
 
 Third-Party Software Acknowledgements
-=====================================
+-------------------------------------
 
 There are about 15 lines of code in FFT.py that
 are a modified version of code inside
@@ -55,7 +55,7 @@ when creating derivative works. More information
 can be found in FFT.py.
 
 Notes
-=====
+-----
 
 Tests in the test directory depend on files that aren't in this source tree,
 so don't expect them to pass for you. The files are not included because
